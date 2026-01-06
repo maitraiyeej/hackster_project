@@ -2,13 +2,18 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/registerPage'; // Make sure this filename is correct
+import Navbar from "./components/Navbar";
+import HomePage from "./pages/HomePage";
 
 function App() {
   return (
     <Router>
+      <div className="flex flex-col h-screen overflow-hidden">
+      <Navbar/>
+        <main>
       <Routes>
         {/* Main Landing/Home Route */}
-        <Route path="/" element={<h1>Home - Authentication Needed</h1>}/>
+        <Route path="/" element={<HomePage/>}/>
         
         {/* Login Route */}
         <Route path="/login" element={<LoginPage/>}/>
@@ -16,6 +21,9 @@ function App() {
         {/* FIX: Changed <Router> to <Route> and matched the component name */}
         <Route path='/register' element={<RegisterPage/>}/>
       </Routes>
+
+        </main>
+      </div>
     </Router>
   );
 }

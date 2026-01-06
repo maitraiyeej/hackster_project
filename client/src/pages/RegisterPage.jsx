@@ -30,7 +30,7 @@ const RegisterPage = () => {
         }
     }
     return (
-        <div className='flex min-h-screen items-center justify-center bg-gray-50 p-4'>
+        <div className='flex h-full items-center justify-center p-4'>
             <div className='w-full max-w-md rounded-xl bg-white p-8 shadow-2xl'>
                 <h2 className='mb-6 text-center text-3xl font-semibold text-indigo-700'>Create Account</h2>
                 {error && (
