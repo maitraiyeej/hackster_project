@@ -1,27 +1,41 @@
-// client/src/App.jsx
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react"; // Added hooks
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/registerPage'; // Make sure this filename is correct
+import RegisterPage from './pages/registerPage'; 
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setUser(JSON.parse(localStorage.getItem('user')));
+    };
+
+    handleStorageChange();
+  }, []);
+
   return (
     <Router>
       <div className="flex flex-col h-screen overflow-hidden">
-      <Navbar/>
+        <Navbar />
         <main>
-      <Routes>
-        {/* Main Landing/Home Route */}
-        <Route path="/" element={<HomePage/>}/>
-        
-        {/* Login Route */}
-        <Route path="/login" element={<LoginPage/>}/>
-        
-        {/* FIX: Changed <Router> to <Route> and matched the component name */}
-        <Route path='/register' element={<RegisterPage/>}/>
-      </Routes>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
 
+            {/* Use the 'user' state here instead of the raw variable */}
+            <Route
+              path="/admin"
+              element={
+                user && user.role === 'Admin' ? <AdminDashboard /> : <Navigate to='/' />
+              }
+            />
+
+            <Route path="/login" element={<LoginPage />} />
+            <Route path='/register' element={<RegisterPage />} />
+          </Routes>
         </main>
       </div>
     </Router>

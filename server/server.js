@@ -1,5 +1,6 @@
-import express from 'express';
 import dotenv from 'dotenv';
+dotenv.config();
+import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';        
 import hackathonRoutes from './routes/hackathonRoutes.js';
@@ -8,7 +9,6 @@ import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
-dotenv.config();
 
 const app = express();
 app.use(express.json());
