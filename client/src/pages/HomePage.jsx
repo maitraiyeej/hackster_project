@@ -1,5 +1,6 @@
 import React from 'react';
 import { useGetHackathonsQuery } from '../services/hackathonApi';
+import { Link } from 'react-router-dom';
 
 const HomePage = () => {
   const { data: hackathons, isLoading, error } = useGetHackathonsQuery();
@@ -35,7 +36,7 @@ const HomePage = () => {
           <span className="text-xs uppercase tracking-widest">Team Recruiting</span>
         </div>
         <div className="p-8 flex items-center justify-end">
-          <button className="bg-black text-white px-8 py-3 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-gray-800 transition">
+          <button className="border-2 border-solid bg-black text-white px-8 py-3 rounded-full font-bold uppercase text-xs tracking-widest hover:invert transition">
             Explore All ↗
           </button>
         </div>
@@ -45,7 +46,12 @@ const HomePage = () => {
       <section className="p-10 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 border-t border-l border-black">
           {hackathons && hackathons.map((hack) => (
-            <div key={hack._id} className="border-r border-b border-black p-8 hover:bg-gray-50 transition-colors group cursor-pointer">
+            // 2. WRAP THE CARD CONTENT WITH <Link>
+            <Link 
+              to={`/hackathon/${hack._id}`} 
+              key={hack._id} 
+              className="border-r border-b border-black p-8 hover:bg-gray-50 transition-colors group cursor-pointer block no-underline text-inherit"
+            >
               <div className="flex justify-between items-start mb-12">
                 <span className="text-xs font-bold uppercase tracking-widest bg-black text-white px-2 py-1">
                   {hack.location || 'Remote'}
@@ -68,7 +74,7 @@ const HomePage = () => {
                   </span>
                 ))}
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

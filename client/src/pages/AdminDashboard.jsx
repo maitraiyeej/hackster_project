@@ -10,13 +10,13 @@ const AdminDashboard = () => {
         endDate: '',
         location: '',
         organization: '', // Required by your schema
-        techStack: '', 
+        techStack: '',
     });
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
-    
+
     const navigate = useNavigate();
 
     // 1. Capture input changes
@@ -28,37 +28,29 @@ const AdminDashboard = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError('');
 
         try {
-            // Get user info from localStorage to get the token
-            const userInfo = JSON.parse(localStorage.getItem('user'));
-            
-            if (!userInfo || userInfo.role !== 'Admin') {
-                setError('Access denied. Admins only.');
-                return;
-            }
+            const userInfo = JSON.parse(localStorage.getItem('user')); // Ensure key is 'user'
 
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${userInfo.token}`, // Your "Key"
+                    Authorization: `Bearer ${userInfo.token}`,
                 },
             };
 
-            // Convert techStack string to Array for the database
+            // PREPARE DATA: Change 'techStack' to 'techStacks' to match your DB
             const finalData = {
                 ...formData,
-                techStack: formData.techStack.split(',').map(item => item.trim())
+                techStacks: formData.techStack.split(',').map(item => item.trim())
             };
 
             await axios.post('http://localhost:5000/api/hackathons', finalData, config);
-            
-            setSuccess(true);
-            setTimeout(() => navigate('/'), 2000); // Redirect to home to see the card
 
+            setSuccess(true);
+            setTimeout(() => navigate('/'), 2000);
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to create hackathon');
+            setError(err.response?.data?.message || 'Failed to create');
         } finally {
             setLoading(false);
         }
@@ -69,7 +61,7 @@ const AdminDashboard = () => {
             <h2>Admin: Create Hackathon</h2>
             {error && <div style={errorStyle}>{error}</div>}
             {success && <div style={successStyle}>Hackathon created! Redirecting...</div>}
-            
+
             <form onSubmit={handleSubmit} style={formStyle}>
                 <input type="text" name="name" placeholder="Name" required onChange={handleChange} style={inputStyle} />
                 <textarea name="description" placeholder="Description" required onChange={handleChange} style={inputStyle} />
@@ -78,7 +70,7 @@ const AdminDashboard = () => {
                 <input type="text" name="location" placeholder="Location" required onChange={handleChange} style={inputStyle} />
                 <input type="text" name="organization" placeholder="Organization" required onChange={handleChange} style={inputStyle} />
                 <input type="text" name="techStack" placeholder="Tech Stack (React, Node, etc.)" onChange={handleChange} style={inputStyle} />
-                
+
                 <button type="submit" disabled={loading} style={buttonStyle}>
                     {loading ? 'Processing...' : 'Create Hackathon'}
                 </button>
