@@ -170,8 +170,11 @@ const HackathonDetails = () => {
                                         </span>
                                         {/* Check if user is the captain */}
                                         {(team.captain._id || team.captain) === user?._id ? (
-                                            <button className="w-full border border-black py-3 text-xs font-bold uppercase tracking-widest cursor-not-allowed opacity-50">
-                                                Captain (Manage Team)
+                                            <button
+                                                onClick={() => navigate(`/manage-team/${team._id}`)}
+                                                className="w-full border-2 bg-black text-white border-black py-3 text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all cursor-pointer opacity-100"
+                                            >
+                                                Manage Team Settings →
                                             </button>
                                         ) : (
                                             <button

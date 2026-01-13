@@ -7,6 +7,7 @@ import HomePage from "./pages/HomePage";
 import AdminDashboard from "./pages/AdminDashboard";
 import HackathonDetails from "./pages/HackathonDetails";
 import CreateTeam from "./pages/CreateTeam";
+import ManageTeam from "./pages/ManageTeam";
 
 function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
@@ -39,6 +40,7 @@ function App() {
             <Route path='/register' element={<RegisterPage />} />
             <Route path="/hackathon/:id" element={<HackathonDetails/>} />
             <Route path="/hackathon/:id/create-team" element={<CreateTeam/>}/>
+            <Route path="/manage-team/:teamId" element={<ManageTeam/>}/>
           </Routes>
         </main>
       </div>
