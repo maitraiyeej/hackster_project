@@ -37,6 +37,57 @@ const HackathonDetails = () => {
         navigate(`/hackathon/${id}/create-team`);
     };
 
+    const handleJoinTeam = async (teamId) => {
+        if (!user) {
+            alert("Please login to join the team!");
+            navigate('/login');
+            return;
+        }
+
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+
+            const res = await axios.put(`http://localhost:5000/api/teams/${teamId}/join`, {}, config);
+            alert(res.data.message || "Successfully joined the team!");
+
+            const resTeams = await axios.get(`http://localhost:5000/api/teams?hackathon=${id}`);
+            setTeams(resTeams.data);
+
+        }
+        catch (error) {
+            alert(error.response?.data?.message || "Failed to join team");
+        }
+    }
+
+    const handleLeaveTeam = async (teamId) => {
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+
+        if (!window.confirm("Are you sure you want to leave this team?")) return;
+
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${storedUser.token}`,
+                },
+            };
+
+            const res = await axios.put(`http://localhost:5000/api/teams/${teamId}/leave`, {}, config);
+
+            alert(res.data.message || "You have left the team.");
+
+            const resTeam = await axios.get(`http://localhost:5000/api/teams?hackathon=${id}`);
+
+            setTeams(resTeam.data);
+
+        } catch (error) {
+            alert(error.response?.data?.message || "Failed to leave team");
+        }
+    };
+
     if (loading) return <div className="p-10 font-mono">LOADING_DETAILS...</div>;
     if (!hackathon) return <div className="p-10">HACKATHON_NOT_FOUND</div>;
 
@@ -90,14 +141,14 @@ const HackathonDetails = () => {
             <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
                 {teams.length > 0 ? (
                     teams.map((team) => (
-                        <div key={team._id} className="border border-black p-6 hover:shadow-lg transition-all bg-white group">
+                        <div key={team._id} className="border border-black p-6 hover:shadow-lg transition-all bg-white group flex flex-col">
                             <div className="flex justify-between items-start mb-4">
                                 <h3 className="text-2xl font-bold tracking-tighter uppercase italic">{team.name}</h3>
                                 <span className="text-[10px] font-bold bg-gray-100 px-2 py-1">
                                     {team.members?.length || 1} / {team.teamSize} MEMBERS
                                 </span>
                             </div>
-                            
+
                             <p className="text-gray-600 text-sm mb-6 line-clamp-3 min-h-[60px]">
                                 {team.projectIdea}
                             </p>
@@ -110,9 +161,41 @@ const HackathonDetails = () => {
                                 ))}
                             </div>
 
-                            <button className="border-2 border-solid w-full bg-black text-white py-3 text-xs font-bold uppercase tracking-widest group-hover:invert transition-all">
-                                Request to Join →
-                            </button>
+
+                            <div className="mt-auto">
+                                {team.members.some(m => (m._id || m) === user?._id) ? (
+                                    <div className="flex flex-col gap-2">
+                                        <span className="text-center text-[10px] font-bold text-green-600 uppercase tracking-widest mb-1">
+                                            ✓ YOU_ARE_A_MEMBER
+                                        </span>
+                                        {/* Check if user is the captain */}
+                                        {(team.captain._id || team.captain) === user?._id ? (
+                                            <button className="w-full border border-black py-3 text-xs font-bold uppercase tracking-widest cursor-not-allowed opacity-50">
+                                                Captain (Manage Team)
+                                            </button>
+                                        ) : (
+                                            <button
+                                                onClick={() => handleLeaveTeam(team._id)}
+                                                className="w-full bg-red-50 text-red-600 border border-red-200 py-3 text-xs font-bold uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all"
+                                            >
+                                                Leave Team ×
+                                            </button>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <button
+                                        disabled={team.status === 'Full'}
+                                        onClick={() => handleJoinTeam(team._id)}
+                                        className={`border-2 border-solid w-full py-3 text-xs font-bold uppercase tracking-widest transition-all ${team.status === 'Full'
+                                            ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                                            : 'bg-black text-white hover:invert'
+                                            }`}
+                                    >
+                                        {team.status === 'Full' ? 'TEAM_FULL' : 'Request to Join →'}
+                                    </button>
+                                )}
+                            </div>
+                            {/* -------------------------------------------------- */}
                         </div>
                     ))
                 ) : (
