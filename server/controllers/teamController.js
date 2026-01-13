@@ -185,10 +185,10 @@ const getRecruitingTeams = async (req, res) => {
             'needs.0': { $exists: true }
         }
 
-        const { hackathonId, roleNeeded } = req.query;
+        const { hackathon, roleNeeded } = req.query;
 
-        if (hackathonId && isValidObjectId(hackathonId)) {
-            query.hackathon = hackathonId;
+        if (hackathon && isValidObjectId(hackathon)) {
+            query.hackathon = hackathon;
         }
 
         if (roleNeeded) {
