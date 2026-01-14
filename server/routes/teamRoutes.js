@@ -1,5 +1,5 @@
 import express from 'express'
-import { joinTeam, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams, removeMember } from '../controllers/teamController.js';
+import { joinTeam, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams, removeMember, deleteTeam } from '../controllers/teamController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 
@@ -10,7 +10,8 @@ router.route('/')
     .post(protect, createTeam);
 
 router.route('/:id')
-    .get(getTeamDetails);
+    .get(getTeamDetails)
+    .delete(protect, deleteTeam);
 
 router.route('/:id/join')
     .put(protect, joinTeam)

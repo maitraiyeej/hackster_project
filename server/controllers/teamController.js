@@ -254,4 +254,37 @@ const removeMember = async(req,res) => {
     }
 }
 
-export { joinTeam, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams, removeMember };
+const deleteTeam = async(req,res) => {
+    const {id} = req.params;
+    const userId = req.user._id;
+
+    try{
+        const team = await Team.findById(id);
+
+        if(!team) {
+            return res.status(404).json({message:
+                'Team not found'
+            });
+        }
+
+        if(team.captain.toString() !== userId.toString()){
+            return res.status(403).json({
+                message: 'Unauthorized: Only the captain can delete this team'
+            });
+        }
+
+        await Team.findByIdAndDelete(id);
+
+        res.status(200).json({
+            message: 'Team delete successfully'
+        })
+    }
+    catch(error){
+        res.status(500).json({
+            message:'Error deleting team',
+            error: error.message
+        })
+    }
+}
+
+export { joinTeam, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams, removeMember, deleteTeam };

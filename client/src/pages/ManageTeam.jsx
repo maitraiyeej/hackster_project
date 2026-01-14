@@ -53,6 +53,30 @@ const ManageTeam = () => {
         }
     };
 
+    const handleDeleteTeam = async () => {
+        const confirmDelete = window.confirm(
+            "WARNING: This will permanently delete the team. This action cannot be undone. Proceed?"
+        );
+
+        if (!confirmDelete) return;
+
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                }
+            }
+
+            await axios.delete(`http://localhost:5000/api/teams/${teamId}`, config);
+
+            alert("Team delete successfully.");
+            navigate(-1);
+        }
+        catch (error) {
+            alert(error.response?.data?.message || "Failed to delete team");
+        }
+    }
+
     if (loading) return <div className="p-10 font-mono">LOADING_MANAGEMENT_CONSOLE...</div>;
 
     return (
@@ -83,6 +107,15 @@ const ManageTeam = () => {
                             )}
                         </div>
                     ))}
+                </div>
+                <div className="mt-20 border-t border-red-200 pt-10">
+                    <h3 className="text-red-600 font-bold uppercase text-xs tracking-widest mb-4">Danger Zone</h3>
+                    <button
+                        onClick={handleDeleteTeam}
+                        className="bg-white text-red-600 border border-red-600 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all"
+                    >
+                        Delete Team Permanently
+                    </button>
                 </div>
             </div>
         </div>
