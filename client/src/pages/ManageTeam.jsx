@@ -25,12 +25,40 @@ const ManageTeam = () => {
         fetchTeam();
     }, [teamId, user.token]);
 
+    const handleRemoveMember = async (memberId) => {
+        if (!window.confirm('Are you sure you want to remove this member?')) return;
+
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${user.token}`
+                }
+            };
+
+            await axios.put(
+                `http://localhost:5000/api/teams/${teamId}/remove/${memberId}`,
+                {},
+                config
+            );
+
+            alert("Member removed successfully");
+
+            setTeam((prev) => ({
+                ...prev,
+                members: prev.members.filter((m) => m._id !== memberId),
+            }));
+        }
+        catch (error) {
+            alert(error.response?.data?.message || "Error removing member");
+        }
+    };
+
     if (loading) return <div className="p-10 font-mono">LOADING_MANAGEMENT_CONSOLE...</div>;
 
     return (
         <div className="max-w-4xl mx-auto p-10 bg-white min-h-screen">
             <button onClick={() => navigate(-1)} className="text-xs font-bold uppercase mb-8">← Back</button>
-            
+
             <h1 className="text-5xl font-bold tracking-tighter uppercase italic">{team?.name}</h1>
             <p className="text-gray-500 uppercase text-xs tracking-widest mt-2">Team Management Dashboard</p>
 
@@ -46,7 +74,12 @@ const ManageTeam = () => {
                             {member._id === team.captain._id ? (
                                 <span className="text-[10px] font-bold bg-black text-white px-2 py-1 uppercase">Captain</span>
                             ) : (
-                                <button className="text-[10px] font-bold text-red-600 uppercase border border-red-600 px-2 py-1 hover:bg-red-600 hover:text-white transition">Remove</button>
+                                <button
+                                    onClick={() => handleRemoveMember(member._id)}
+                                    className="text-[10px] font-bold text-red-600 uppercase border border-red-600 px-2 py-1 bg-red-600 text-white hover:bg-white hover:text-red-600 transition cursor-pointer"
+                                >
+                                    Remove
+                                </button>
                             )}
                         </div>
                     ))}

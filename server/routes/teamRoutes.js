@@ -1,5 +1,5 @@
 import express from 'express'
-import { joinTeam, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams } from '../controllers/teamController.js';
+import { joinTeam, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams, removeMember } from '../controllers/teamController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 
@@ -17,5 +17,7 @@ router.route('/:id/join')
 
 router.route('/:id/leave')
     .put(protect, leaveTeam);
+
+router.route('/:id/remove/:userId').put(protect, removeMember);
 
 export default router;

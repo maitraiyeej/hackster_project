@@ -212,4 +212,46 @@ const getRecruitingTeams = async (req, res) => {
     }
 }
 
-export { joinTeam, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams };
+const removeMember = async(req,res) => {
+    const {id, userId} = req.params;
+    const captainId = req.user._id;
+
+    try{
+        const team= await Team.findById(id);
+
+        if(!team) return res.status(404).json({
+            message:'Team not found'
+        });
+
+        if(team.captain.toString() !== captainId.toString()){
+            return res.status(403).json({
+                message: 'Only captains can remove members'
+            });
+        }
+
+        if(userId === team.captain.toString()){
+            return res.status(400).json({
+                message:'Captain cannot be removed. Delete the team instead'
+            })
+        }
+
+        team.members = team.members.filter(m => m.toString() !== userId);
+
+        if(team.status === 'Full' && team.members.length < team.teamSize){
+            team.status = 'Recruiting';
+        }
+
+        await team.save();
+        res.json({message:'Member removed successfully', team});
+
+
+    }
+    catch(error){
+        res.status(500).json({
+            message: 'Server error',
+            error: error.message
+        });
+    }
+}
+
+export { joinTeam, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams, removeMember };
