@@ -287,4 +287,32 @@ const deleteTeam = async(req,res) => {
     }
 }
 
-export { joinTeam, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams, removeMember, deleteTeam };
+const updateTeam = async (req, res) => {
+    const {id} = req.params;
+    const userId = req.user._id;
+    const {name, projectIdea, teamSize, needs} = req.body;
+
+    try{
+        const team = await Team.findById(id);
+
+        if(!team) return res.status(404).json({
+            message: 'Team not found'
+        })
+
+        team.name = name || team.name;
+        team.projectIdea = projectIdea || team.projectIdea;
+        team.teamSize = teamSize || team.teamSize;
+        team.needs = needs || team.needs;
+
+        const updatedTeam = await team.save();
+        res.json(updatedTeam);
+    }
+    catch(error){
+        res.status(500).json({
+            message: 'Error updating team',
+            error: error.message
+        })
+    }
+}
+
+export { joinTeam, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams, removeMember, deleteTeam, updateTeam };
