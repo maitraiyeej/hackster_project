@@ -134,11 +134,18 @@ const createTeam = async (req, res) => {
     const captainId = req.user._id;
     const { name, hackathon, teamSize, needs, projectIdea } = req.body;
 
+    if(teamSize<2 || teamSize>6){
+        return res.status(400).json({
+            message: "Team size must be between 2 and 6 members."
+        })
+    }
+
     if (!name || !hackathon || !needs || needs.length===0 ) {
         return res.status(400).json({
             message: 'Please provide a name, hackathon ID, and team needs.'
         })
     }
+
 
     if (!isValidObjectId(hackathon)) {
         return res.status(400).json({

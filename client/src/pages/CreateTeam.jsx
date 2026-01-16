@@ -6,6 +6,7 @@ const CreateTeam = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [teamSize, setTeamSize] = useState(4);
 
     const [formData, setFormData] = useState({
         name: '',
@@ -94,14 +95,17 @@ const CreateTeam = () => {
                     </div>
                     <div>
                         <label className="text-xs font-bold uppercase tracking-widest block mb-2 text-gray-400">Total Team Size</label>
-                        <input
-                            className="w-full border-b border-black py-2 outline-none bg-transparent"
-                            type="number"
-                            min="2"
-                            max="10"
-                            defaultValue="4"
+                        <select
+                            className="w-full border-b border-black py-2 outline-none bg-transparent cursor-pointer font-medium text-lg"
+                            value={formData.teamSize}
                             onChange={(e) => setFormData({ ...formData, teamSize: e.target.value })}
-                        />
+                        >
+                            {[2, 3, 4, 5, 6].map(num => (
+                                <option key={num} value={num}>
+                                    {num} Members
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
 
