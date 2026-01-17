@@ -18,7 +18,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="h-16 bg-white shadow-md flex justify-between items-center px-10 z-10">
+        <nav className="w-full h-16 bg-white shadow-md flex justify-between items-center px-10 z-10 flex-shrink-0 sticky top-0">
             <Link to="/" className="text-xl font-bold text-indigo-700">HackSter</Link>
 
             <div className="space-x-6 flex items-center">

@@ -22,7 +22,7 @@ function App() {
 
   return (
     <Router>
-      <div className="flex flex-col h-screen overflow-hidden">
+      <div className="flex flex-col min-h-screen bg-white">
         <Navbar />
         <main>
           <Routes>
