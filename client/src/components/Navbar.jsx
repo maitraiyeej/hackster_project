@@ -8,43 +8,61 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    //theme toggle 
-    // Get the user data from our Redux state
     const { user } = useSelector((state) => state.auth);
 
     const handleLogout = () => {
-        dispatch(logout()); // Clears Redux state and LocalStorage
+        dispatch(logout()); 
         navigate('/login');
     };
 
     return (
-        <nav className="w-full h-16 bg-white shadow-md flex justify-between items-center px-10 z-10 flex-shrink-0 sticky top-0">
-            <Link to="/" className="text-xl font-bold text-indigo-700">HackSter</Link>
+        <nav className="w-full h-20 bg-white border-b-2 border-black flex justify-between items-center px-10 sticky top-0 z-50">
+            <Link to="/" className="text-3xl font-black tracking-tighter uppercase italic">
+                Hack<span className="bg-black text-white px-1 not-italic">Ster</span>
+            </Link>
 
-            <div className="space-x-6 flex items-center">
-                <Link to="/" className="text-gray-600 hover:text-indigo-600">Home</Link>
+            <div className="flex items-center gap-8">
+                <Link to="/" className="text-[10px] font-bold uppercase tracking-[0.2em] hover:underline decoration-2 underline-offset-4">
+                    Home
+                </Link>
 
                 {user ? (
-                    <>
-                        <span className="text-gray-800 font-medium">Hello, {user.name}</span>
+                    <div className="flex items-center gap-6">
+                        {user.role === 'Admin' && (
+                            <Link 
+                                to="/admin" 
+                                className="border-2 text-[10px] font-bold uppercase tracking-[0.2em] bg-black text-white px-3 py-1 hover:invert transition-all"
+                            >
+                                + Create Event
+                            </Link>
+                        )}
+
+                        <div className="flex flex-col items-end">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 leading-none">Logged in as</span>
+                            <span className="text-xs font-bold uppercase tracking-tighter">{user.name}</span>
+                        </div>
+
                         <button
                             onClick={handleLogout}
-                            className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition"
+                            className="border-2 border-black px-5 py-2 text-[10px] text-red-600 border-red-600 font-bold uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all"
                         >
-                            Logout
+                            Logout ×
                         </button>
-                    </>
+                    </div>
                 ) : (
-                    <>
-                        <Link to="/login" className="text-gray-600 hover:text-indigo-600">Login</Link>
-                        <Link to="/register" className="bg-indigo-600 text-white px-4 py-2 rounded">Register</Link>
-                    </>
+                    <div className="flex items-center gap-4">
+                        <Link to="/login" className="text-[10px] font-bold uppercase tracking-widest">
+                            Login
+                        </Link>
+                        <Link 
+                            to="/register" 
+                            className="bg-black text-white border-2 border-black px-6 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all"
+                        >
+                            Register →
+                        </Link>
+                    </div>
                 )}
-
-
             </div>
-
-
         </nav>
     );
 };
