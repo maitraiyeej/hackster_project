@@ -186,13 +186,14 @@ const createTeam = async (req, res) => {
 
 const getRecruitingTeams = async (req, res) => {
     try {
+        const { hackathon, roleNeeded, onlyRecruiting } = req.query;
+        
+        const query = {};
 
-        const query = {
-            status: 'Recruiting',
-            'needs.0': { $exists: true }
+        if (onlyRecruiting === 'true' || !hackathon) {
+            query.status = 'Recruiting';
+            query['needs.0'] = { $exists: true };
         }
-
-        const { hackathon, roleNeeded } = req.query;
 
         if (hackathon && isValidObjectId(hackathon)) {
             query.hackathon = hackathon;
@@ -205,7 +206,8 @@ const getRecruitingTeams = async (req, res) => {
         const teams = await Team.find(query)
             .populate([
                 { path: 'hackathon', select: 'name organization startDate' },
-                { path: 'captain', select: 'name role' }
+                { path: 'captain', select: 'name role' },
+                { path: 'members', select: 'name email' } // Ensure members are populated to check count
             ])
             .sort({ createdAt: -1 });
 
