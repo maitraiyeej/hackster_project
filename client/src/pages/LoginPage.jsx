@@ -12,8 +12,15 @@ const LoginPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login(formData).unwrap();
-            navigate('/');  //success - navigate to home page
+            // 1. Unwrap the result to get the user data (including role)
+            const userData = await login(formData).unwrap();
+            
+            // 2. Conditional navigation based on role
+            if (userData.role === 'Admin') {
+                navigate('/admin');
+            } else {
+                navigate('/');
+            }
         }
         catch (error) {
             console.error('Login failed:', error);
@@ -23,33 +30,61 @@ const LoginPage = () => {
     return (
         <div className='flex h-full items-center justify-center p-4'>
             <div className='w-full max-w-md rounded-xl bg-white p-8 shadow-2xl'>
-                <h2 className='mb-6 text-center text-3xl font-semibold text-indigo-700'>Sign In</h2>
+                <h2 className='mb-6 text-center text-3xl font-bold tracking-tighter text-black uppercase italic'>Welcome Back</h2>
 
                 {error && (
-                    <div className='mb-4 rounded bg-red-100 p-3 text-sm text-red-700'>
-                        {error.data?.message || 'Server error occurred.'}
+                    <div className='mb-4 rounded bg-red-50 border border-red-200 p-3 text-[10px] font-black uppercase text-red-700 tracking-tighter'>
+                        {error.data?.message || 'Access Denied: Invalid Credentials'}
                     </div>
                 )}
 
                 <form onSubmit={handleSubmit} className='space-y-6'>
-                    <input type="email" name='email' value={formData.email} onChange={handleChange} placeholder='Email' required className='w-full rounded-lg border border-gray-300 px-4 py-2' />
-                    <input type="password" name='password' value={formData.password} onChange={handleChange} placeholder='Password' required className='w-full rounded-lg border border-gray-300 px-4 py-2' />
+                    <div>
+                        <label className='block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1'>Email Address</label>
+                        <input 
+                            type="email" 
+                            name='email' 
+                            value={formData.email} 
+                            onChange={handleChange} 
+                            placeholder='' 
+                            required 
+                            className='w-full border-b-2 border-gray-200 py-2 focus:outline-none focus:border-black transition-colors' 
+                        />
+                    </div>
+                    
+                    <div>
+                        <label className='block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1'>Password</label>
+                        <input 
+                            type="password" 
+                            name='password' 
+                            value={formData.password} 
+                            onChange={handleChange} 
+                            placeholder='' 
+                            required 
+                            className='w-full border-b-2 border-gray-200 py-2 focus:outline-none focus:border-black transition-colors' 
+                        />
+                    </div>
 
                     <button
                         type='submit'
                         disabled={isLoading}
-                        className={`w-full rounded-lg py-2 font-semibold text-white transition-colors ${isLoading ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                        className={`border-2 w-full py-4 font-bold text-xs uppercase tracking-widest transition-all ${
+                            isLoading 
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                            : 'bg-black text-white hover:invert'
+                        }`}
                     >
-                        {isLoading ? 'Signing In...' : 'Login'}
+                        {isLoading ? 'Authenticating...' : 'Login →'}
                     </button>
                 </form>
-                <p className='mt-4 text-center text-sm text-gray-600'>
-                    Don't have an account? <Link to='/register' className='text-indigo-600 hover:underline'>Sign Up</Link>
+
+                <p className='mt-8 text-center text-[10px] font-bold uppercase tracking-widest text-gray-500'>
+                    Don't have an account? 
+                    <Link to='/register' className='text-black hover:underline ml-2'>Register Now</Link>
                 </p>
             </div>
         </div>
     )
 }
-
 
 export default LoginPage;
