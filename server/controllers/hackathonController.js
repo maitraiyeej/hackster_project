@@ -116,6 +116,19 @@ const getHackathons = async(req,res) => {
     }
 }
 
+const getMyHackathons = async(req,res) => {
+    try{
+        const hackathons = await Hackathon.find({createdBy:req.user.id}).sort({createdAt:-1});
+        res.json(hackathons);
+    }
+    catch(error){
+        res.status(500).json({
+            message: 'Error fetching your events',
+            error:error.message
+        })
+    }
+}
+
 const getHackathonById = async(req,res) => {
     if(!isValidObjectId(req.params.id)){
         return res.status(400).json({
@@ -143,4 +156,4 @@ const getHackathonById = async(req,res) => {
     }
 }
 
-export {getHackathons, getHackathonById, createHackathon, updateHackathon, deleteHackathon};
+export {getHackathons, getMyHackathons, getHackathonById, createHackathon, updateHackathon, deleteHackathon};

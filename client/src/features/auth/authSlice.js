@@ -1,41 +1,41 @@
-//this file manages saving and deleting the user's token and data
 import { createSlice } from "@reduxjs/toolkit";
 
-//reads stored user data - when the user refreshes the page, redux state is lost
 const getUserFromStorage = () => {
-    try{
+    try {
         const serializedUser = localStorage.getItem('user');
-        if(serializedUser === null) {return {token:null, user:null};}
+        if (serializedUser === null) {
+            return { token: null, user: null };
+        }
         const userData = JSON.parse(serializedUser);
-        return {token:userData.token, user:userData};       //separates user and token
-
-    }
-    catch(e){
-        return {token:null, user:null}
+        // Ensure we return the flat user object and the token separately
+        return { 
+            token: userData.token, 
+            user: userData // This contains name, role, etc.
+        };
+    } catch (e) {
+        return { token: null, user: null };
     }
 }
 
-//redux starts with logged in state (if exists) or logged out state 
 const initialState = getUserFromStorage();
 
 const authSlice = createSlice({
-    name:'auth',
+    name: 'auth',
     initialState,
-    reducers:{
-        setCredentials: (state, action ) => {
-            const {token, ...userData} = action.payload;
-            state.token = token;
-            state.user = userData;
+    reducers: {
+        setCredentials: (state, action) => {
+            // action.payload is the whole object from your backend (including token)
+            state.token = action.payload.token;
+            state.user = action.payload; // Store the full object so role/name are available
             localStorage.setItem('user', JSON.stringify(action.payload));
         },
-        logout:(state) => {
+        logout: (state) => {
             state.token = null;
             state.user = null;
             localStorage.removeItem('user');
         },
-
     },
 });
 
-export const {setCredentials, logout} = authSlice.actions;
+export const { setCredentials, logout } = authSlice.actions;
 export default authSlice.reducer;

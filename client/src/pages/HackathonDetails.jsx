@@ -132,7 +132,7 @@ const HackathonDetails = () => {
                     </div>
                     <button
                         onClick={handleCreateTeam}
-                        className='border-2 border-solid bg-black text-white px-8 py-3 rounded-full font-bold uppercase text-xs tracking-widest hover:invert transition whitespace-nowrap'
+                        className="border-2 border-black bg-black text-white px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-black transition-all whitespace-nowrap"
                     >
                         Create a Team +
                     </button>
@@ -153,7 +153,6 @@ const HackathonDetails = () => {
                                     <div className="flex justify-between items-start mb-4">
                                         <h3 className="text-2xl font-bold tracking-tighter uppercase italic break-all pr-2">{team.name}</h3>
 
-                                        {/* Status and Member Badges */}
                                         <div className="flex flex-col gap-2 items-end shrink-0">
                                             <span className={`text-[9px] font-black uppercase tracking-tighter px-2 py-0.5 border ${getStatusStyles(team.status)}`}>
                                                 {team.status}
@@ -195,8 +194,8 @@ const HackathonDetails = () => {
                                                         disabled={isSubmitted}
                                                         onClick={() => handleLeaveTeam(team._id)}
                                                         className={`w-full py-3 text-xs font-bold uppercase tracking-widest transition-all ${isSubmitted
-                                                                ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-                                                                : 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white'
+                                                            ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                                                            : 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white'
                                                             }`}
                                                     >
                                                         {isSubmitted ? 'LOCKED_BY_SUBMISSION' : 'Leave Team ×'}
@@ -208,8 +207,8 @@ const HackathonDetails = () => {
                                                 disabled={isFull || isSubmitted}
                                                 onClick={() => handleJoinTeam(team._id)}
                                                 className={`border-2 border-solid w-full py-3 text-xs font-bold uppercase tracking-widest transition-all ${(isFull || isSubmitted)
-                                                        ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-                                                        : 'bg-black text-white hover:invert'
+                                                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                                                    : 'bg-black text-white hover:invert'
                                                     }`}
                                             >
                                                 {isSubmitted ? 'SUBMISSION_CLOSED' : isFull ? 'TEAM_FULL' : 'Join Team →'}

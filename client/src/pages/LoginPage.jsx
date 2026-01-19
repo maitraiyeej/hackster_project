@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useLoginMutation } from '../services/authApi';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../features/auth/authSlice';
 
 const LoginPage = () => {
+    const dispatch = useDispatch();
     const [formData, setFormData] = useState({ email: '', password: '' });
     const navigate = useNavigate();
     const [login, { isLoading, error }] = useLoginMutation();
@@ -12,15 +15,11 @@ const LoginPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // 1. Unwrap the result to get the user data (including role)
             const userData = await login(formData).unwrap();
-            
-            // 2. Conditional navigation based on role
-            if (userData.role === 'Admin') {
-                navigate('/admin');
-            } else {
-                navigate('/');
-            }
+
+            dispatch(setCredentials(userData));
+
+            navigate('/');
         }
         catch (error) {
             console.error('Login failed:', error);
@@ -41,45 +40,44 @@ const LoginPage = () => {
                 <form onSubmit={handleSubmit} className='space-y-6'>
                     <div>
                         <label className='block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1'>Email Address</label>
-                        <input 
-                            type="email" 
-                            name='email' 
-                            value={formData.email} 
-                            onChange={handleChange} 
-                            placeholder='' 
-                            required 
-                            className='w-full border-b-2 border-gray-200 py-2 focus:outline-none focus:border-black transition-colors' 
+                        <input
+                            type="email"
+                            name='email'
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder=''
+                            required
+                            className='w-full border-b-2 border-gray-200 py-2 focus:outline-none focus:border-black transition-colors'
                         />
                     </div>
-                    
+
                     <div>
                         <label className='block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1'>Password</label>
-                        <input 
-                            type="password" 
-                            name='password' 
-                            value={formData.password} 
-                            onChange={handleChange} 
-                            placeholder='' 
-                            required 
-                            className='w-full border-b-2 border-gray-200 py-2 focus:outline-none focus:border-black transition-colors' 
+                        <input
+                            type="password"
+                            name='password'
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder=''
+                            required
+                            className='w-full border-b-2 border-gray-200 py-2 focus:outline-none focus:border-black transition-colors'
                         />
                     </div>
 
                     <button
                         type='submit'
                         disabled={isLoading}
-                        className={`border-2 w-full py-4 font-bold text-xs uppercase tracking-widest transition-all ${
-                            isLoading 
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                            : 'bg-black text-white hover:invert'
-                        }`}
+                        className={`border-2 w-full py-4 font-bold text-xs uppercase tracking-widest transition-all ${isLoading
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'bg-black text-white hover:invert'
+                            }`}
                     >
                         {isLoading ? 'Authenticating...' : 'Login →'}
                     </button>
                 </form>
 
                 <p className='mt-8 text-center text-[10px] font-bold uppercase tracking-widest text-gray-500'>
-                    Don't have an account? 
+                    Don't have an account?
                     <Link to='/register' className='text-black hover:underline ml-2'>Register Now</Link>
                 </p>
             </div>
