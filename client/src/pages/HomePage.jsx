@@ -1,11 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGetHackathonsQuery } from '../services/hackathonApi';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const HomePage = ({ user }) => {
+  const [myEventsCount, setMyEventsCount] = useState(0);
   const { data: hackathons, isLoading, error } = useGetHackathonsQuery();
   const navigate = useNavigate();
   const isAdmin = user?.role === 'Admin';
+
+  useEffect(() => {
+    const fetchAdminStats = async () => {
+      if (isAdmin && user?.token) {
+        try {
+          const config = {
+            headers: { Authorization: `Bearer ${user.token}` }
+          }
+          const { data } = await axios.get('http://localhost:5000/api/hackathons/my-events', config);
+          setMyEventsCount(data.length);
+        }
+        catch (err) {
+          console.error("Error fetching admin-specific count:", err);
+        }
+      }
+    }
+    fetchAdminStats();
+  }, [isAdmin, user]);
 
   if (isLoading) return <div className="flex h-full items-center justify-center font-mono text-xl">LOADING_DATA...</div>;
   if (error) return <div className="flex h-full items-center justify-center text-red-500">Error connecting to API.</div>;
@@ -35,8 +55,13 @@ const HomePage = ({ user }) => {
 
       <section className="grid grid-cols-1 md:grid-cols-3 border-b border-black">
         <div className="p-8 border-r border-black flex flex-col justify-center">
-          <span className="text-3xl font-bold">{hackathons?.length || 0}+</span>
-          <span className="text-xs uppercase tracking-widest">{isAdmin ? "Your Managed Events" : "Active Hackathons"}</span>
+          <span className="text-3xl font-bold">
+            {/* If Admin, show personal count; otherwise show global count */}
+            {isAdmin ? myEventsCount : (hackathons?.length || 0)}+
+          </span>
+          <span className="text-xs uppercase tracking-widest">
+            {isAdmin ? "Your Managed Events" : "Active Hackathons"}
+          </span>
         </div>
         <div className="p-8 border-r border-black flex flex-col justify-center">
           {isAdmin ? (
