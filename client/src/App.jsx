@@ -11,6 +11,7 @@ import CreateTeam from "./pages/CreateTeam";
 import ManageTeam from "./pages/ManageTeam";
 import ExplorePage from "./pages/ExplorePage";
 import { useSelector } from "react-redux";
+import UserProfile from "./pages/UserProfile";
 
 function App() {
   const {user} = useSelector((state) => state.auth);
@@ -50,6 +51,7 @@ function App() {
             <Route path="/hackathon/:id" element={<HackathonDetails/>} />
             <Route path="/hackathon/:id/create-team" element={<CreateTeam/>}/>
             <Route path="/manage-team/:teamId" element={<ManageTeam/>}/>
+            <Route path="/user/:id" element={<UserProfile />} />
           </Routes>
         </main>
       </div>

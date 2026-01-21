@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const ManageTeam = () => {
     const { teamId } = useParams();
@@ -74,7 +75,7 @@ const ManageTeam = () => {
                 config
             );
             alert(data.message);
-            fetchTeam(); // Refresh the data to show updated member/request lists
+            fetchTeam(); 
         } catch (error) {
             alert(error.response?.data?.message || "Action failed");
         }
@@ -193,7 +194,6 @@ const ManageTeam = () => {
                 </div>
             )}
 
-            {/* JOIN REQUESTS SECTION */}
             <div className="mt-12 border-t-2 border-black pt-8">
                 <h2 className="text-xl font-bold uppercase mb-6 flex justify-between items-center">
                     Pending Requests
@@ -204,7 +204,10 @@ const ManageTeam = () => {
                         {team.requests.map((request) => (
                             <div key={request._id} className="border-2 border-black p-4 flex justify-between items-center bg-yellow-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                                 <div>
-                                    <p className="font-bold uppercase text-sm">{request.name}</p>
+                                    {/* Link added here */}
+                                    <Link to={`/user/${request._id}`} className="font-bold uppercase text-sm hover:underline hover:text-blue-700 block">
+                                        {request.name} ↗
+                                    </Link>
                                     <p className="text-[10px] text-gray-500 font-mono">{request.email}</p>
                                 </div>
                                 <div className="flex gap-2">
@@ -229,14 +232,15 @@ const ManageTeam = () => {
                 )}
             </div>
 
-            {/* ROSTER SECTION */}
             <div className="mt-12 border-t-2 border-black pt-8">
                 <h2 className="text-xl font-bold uppercase mb-6">Current Roster ({team?.members?.length}/{team?.teamSize})</h2>
                 <div className="grid gap-4">
                     {team?.members?.map((member) => (
                         <div key={member._id} className="border border-black p-4 flex justify-between items-center">
                             <div>
-                                <p className="font-bold uppercase text-sm">{member.name}</p>
+                                <Link to={`/user/${member._id}`} className="font-bold uppercase text-sm hover:underline hover:text-blue-700 block">
+                                    {member.name}
+                                </Link>
                                 <p className="text-xs text-gray-500">{member.email}</p>
                             </div>
                             {member._id === team.captain?._id || member._id === team.captain ? (

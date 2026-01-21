@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 const HackathonDetails = () => {
@@ -159,9 +159,25 @@ const HackathonDetails = () => {
                                         </div>
                                     </div>
 
-                                    <p className="text-gray-600 text-sm mb-6 line-clamp-3">
+                                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                                         {team.projectIdea}
                                     </p>
+
+                                    {/* CLICKABLE ROSTER SECTION */}
+                                    <div className="mb-4">
+                                        <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2">Current Roster:</p>
+                                        <div className="flex flex-wrap gap-x-3 gap-y-1">
+                                            {team.members?.map((member, idx) => (
+                                                <Link 
+                                                    key={idx} 
+                                                    to={`/user/${member._id || member}`} 
+                                                    className="text-[10px] font-bold uppercase hover:underline decoration-black"
+                                                >
+                                                    {member.name || "Hacker"} {idx < team.members.length - 1 ? "•" : ""}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
 
                                     <div className="flex flex-wrap gap-2 mb-6">
                                         {team.needs?.map((need, idx) => (

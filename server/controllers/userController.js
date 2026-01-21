@@ -19,6 +19,24 @@ const getUserProfile = async(req,res) => {
     }
 }
 
+const getPublicUserProfile = async(req,res) => {
+    try{
+        const user = await User.findById(req.params.id).select('-password');
+
+        if(user){
+            res.json(user);
+        }
+        else{
+            res.status(404).json({message:'User not found'});
+        }
+    }
+    catch(error){
+        res.status(500).json({
+            message:'Invalid User ID'
+        })
+    }
+}
+
 const updateUserProfile = async(req,res) => {
     const user = await User.findById(req.user._id);
 
@@ -47,4 +65,4 @@ const updateUserProfile = async(req,res) => {
     }
 }
 
-export {getUserProfile, updateUserProfile}
+export {getUserProfile,getPublicUserProfile, updateUserProfile}

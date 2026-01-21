@@ -1,5 +1,5 @@
 import express from "express";
-import { getUserProfile, updateUserProfile } from "../controllers/userController.js";
+import { getPublicUserProfile, getUserProfile, updateUserProfile } from "../controllers/userController.js";
 import {protect} from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -7,6 +7,8 @@ const router = express.Router();
 router.route('/profile')
     .get(protect, getUserProfile)
     .put(protect, updateUserProfile);
+
+router.route('/:id').get(protect, getPublicUserProfile);
 
 export default router;
 
