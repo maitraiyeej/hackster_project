@@ -1,7 +1,16 @@
-import express from 'express'
-import { joinTeam, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams, removeMember, deleteTeam, updateTeam } from '../controllers/teamController.js';
+import express from 'express';
+import { 
+    requestToJoin,      // Updated
+    manageJoinRequest,  // New
+    leaveTeam, 
+    getTeamDetails, 
+    createTeam, 
+    getRecruitingTeams, 
+    removeMember, 
+    deleteTeam, 
+    updateTeam 
+} from '../controllers/teamController.js';
 import { protect } from '../middleware/authMiddleware.js';
-
 
 const router = express.Router();
 
@@ -14,12 +23,19 @@ router.route('/:id')
     .put(protect, updateTeam)
     .delete(protect, deleteTeam);
 
-router.route('/:id/join')
-    .put(protect, joinTeam)
+
+router.route('/:id/request')
+    .post(protect, requestToJoin);
+
+router.route('/:id/manage-request')
+    .post(protect, manageJoinRequest);
+
+
 
 router.route('/:id/leave')
-    .put(protect, leaveTeam);
+    .post(protect, leaveTeam); 
 
-router.route('/:id/remove/:userId').put(protect, removeMember);
+router.route('/:id/remove/:userId')
+    .delete(protect, removeMember); 
 
 export default router;

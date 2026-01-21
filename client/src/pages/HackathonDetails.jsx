@@ -37,7 +37,7 @@ const HackathonDetails = () => {
         navigate(`/hackathon/${id}/create-team`);
     };
 
-    const handleJoinTeam = async (teamId) => {
+    const handleRequestJoin = async (teamId) => {
         if (!user) {
             alert("Please login to join the team!");
             navigate('/login');
@@ -47,12 +47,13 @@ const HackathonDetails = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const res = await axios.put(`http://localhost:5000/api/teams/${teamId}/join`, {}, config);
-            alert(res.data.message || "Successfully joined the team!");
+            const res = await axios.post(`http://localhost:5000/api/teams/${teamId}/request`, {}, config);
+            alert(res.data.message || "Join request sent to captain!");
+            
             const resTeams = await axios.get(`http://localhost:5000/api/teams?hackathon=${id}`);
             setTeams(resTeams.data);
         } catch (error) {
-            alert(error.response?.data?.message || "Failed to join team");
+            alert(error.response?.data?.message || "Failed to send request");
         }
     }
 
@@ -62,7 +63,7 @@ const HackathonDetails = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const res = await axios.put(`http://localhost:5000/api/teams/${teamId}/leave`, {}, config);
+            const res = await axios.post(`http://localhost:5000/api/teams/${teamId}/leave`, {}, config);
             alert(res.data.message || "You have left the team.");
             const resTeam = await axios.get(`http://localhost:5000/api/teams?hackathon=${id}`);
             setTeams(resTeam.data);
@@ -80,10 +81,8 @@ const HackathonDetails = () => {
                 return 'bg-blue-50 text-blue-700 border-blue-200';
             case 'Full':
                 return 'bg-amber-50 text-amber-700 border-amber-200';
-
             case 'Submitted':
                 return 'bg-green-50 text-green-700 border-green-200';
-
             default:
                 return 'bg-gray-50 text-gray-700 border-gray-200'
         }
@@ -92,7 +91,6 @@ const HackathonDetails = () => {
     return (
         <div className='w-full min-h-screen bg-white'>
             <div className="max-w-5xl mx-auto p-10">
-                {/* Header Section */}
                 <span className="text-xs font-bold uppercase tracking-widest bg-black text-white px-2 py-1">
                     {hackathon.location || 'Remote'}
                 </span>
@@ -124,7 +122,6 @@ const HackathonDetails = () => {
 
                 <hr className="my-16 border-black" />
 
-                {/* Teams Header */}
                 <div className='flex flex-col md:flex-row justify-between items-start md:items-end gap-4'>
                     <div>
                         <h2 className='text-4xl font-bold tracking-tighter'>Recruiting Teams</h2>
@@ -138,15 +135,14 @@ const HackathonDetails = () => {
                     </button>
                 </div>
 
-                {/* Teams Grid */}
                 <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6 pb-24">
                     {teams.length > 0 ? (
                         teams.map((team) => {
-                            // Check if the current user is a member
                             const isMember = team.members.some(m => (m._id || m) === user?._id);
                             const isCaptain = (team.captain?._id || team.captain) === user?._id;
                             const isFull = team.status === 'Full' || (team.members?.length >= team.teamSize);
                             const isSubmitted = team.status === 'Submitted';
+                            const isPending = team.requests?.some(r => (r._id || r) === user?._id);
 
                             return (
                                 <div key={team._id} className="border border-black p-6 hover:shadow-lg transition-all bg-white flex flex-col min-h-[320px]">
@@ -175,7 +171,6 @@ const HackathonDetails = () => {
                                         ))}
                                     </div>
 
-                                    {/* Dynamic Action Buttons */}
                                     <div className="mt-auto">
                                         {isMember ? (
                                             <div className="flex flex-col gap-2">
@@ -204,14 +199,14 @@ const HackathonDetails = () => {
                                             </div>
                                         ) : (
                                             <button
-                                                disabled={isFull || isSubmitted}
-                                                onClick={() => handleJoinTeam(team._id)}
-                                                className={`border-2 border-solid w-full py-3 text-xs font-bold uppercase tracking-widest transition-all ${(isFull || isSubmitted)
+                                                disabled={isFull || isSubmitted || isPending}
+                                                onClick={() => handleRequestJoin(team._id)}
+                                                className={`border-2 border-solid w-full py-3 text-xs font-bold uppercase tracking-widest transition-all ${(isFull || isSubmitted || isPending)
                                                     ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
                                                     : 'bg-black text-white hover:invert'
                                                     }`}
                                             >
-                                                {isSubmitted ? 'SUBMISSION_CLOSED' : isFull ? 'TEAM_FULL' : 'Join Team →'}
+                                                {isSubmitted ? 'SUBMISSION_CLOSED' : isFull ? 'TEAM_FULL' : isPending ? 'REQUEST_PENDING' : 'Request to Join →'}
                                             </button>
                                         )}
                                     </div>

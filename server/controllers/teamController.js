@@ -14,11 +14,12 @@ const getTeamDetails = async (req, res) => {
             .populate([
                 { path: 'hackathon', select: 'name organization startDate' },
                 { path: 'captain', select: 'name email role skills' },
-                { path: 'members', select: 'name email role skills' }
+                { path: 'members', select: 'name email role skills' },
+                { path: 'requests', select: 'name email role skills' }
             ]);
 
-        if(!team){
-            return res.status(404).json({message:'Team not found'});
+        if (!team) {
+            return res.status(404).json({ message: 'Team not found' });
         }
         res.json(team);
     }
@@ -30,55 +31,78 @@ const getTeamDetails = async (req, res) => {
     }
 }
 
-const joinTeam = async (req, res) => {
+const requestToJoin = async (req, res) => {
     const teamId = req.params.id;
     const userId = req.user._id;
 
     if (!isValidObjectId(teamId)) {
-        return res.status(400).json({ message: 'Invalid team ID format' })
+        return res.status(400).json({ message: 'Invalid team ID format' });
     }
 
     try {
         const team = await Team.findById(teamId);
 
-        if (!team) {
-            return res.status(404).json({
-                message: 'Team not found'
-            })
-        }
+        if (!team) return res.status(404).json({ message: 'Team not found' });
 
         if (team.members.map(m => m.toString()).includes(userId.toString())) {
-            return res.status(400).json({
-                message: "You are already a member of this team."
-            })
+            return res.status(400).json({ message: "You are already a member of this team." });
+        }
+
+        if (team.requests && team.requests.map(r => r.toString()).includes(userId.toString())) {
+            return res.status(400).json({ message: "Request already pending approval." });
         }
 
         if (team.members.length >= team.teamSize) {
-            team.status = 'Full'
-            await team.save();
-            return res.status(400).json({ message: 'Team is already full.' })
+            return res.status(400).json({ message: 'Team is already full.' });
         }
 
-        team.members.push(userId);
+        team.requests.push(userId);
+        await team.save();
 
-        if (team.members.length === team.teamSize) {
-            team.status = 'Full'
+        res.json({ message: 'Join request sent to captain!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to send request', error: error.message });
+    }
+};
+
+const manageJoinRequest = async (req, res) => {
+    const { id } = req.params;
+    const { userId, action } = req.body;
+    const captainId = req.user._id;
+
+    try {
+        const team = await Team.findById(id);
+
+        if (!team) return res.status(404).json({ message: 'Team not found' });
+
+        if (team.captain.toString() !== captainId.toString()) {
+            return res.status(403).json({ message: 'Only the captain can manage requests' });
         }
 
-        const updatedTeam = await team.save();
+        team.requests = team.requests.filter(reqId => reqId.toString() !== userId);
 
-        const populatedTeam = await updatedTeam.populate([
-            { path: 'members', select: 'name email role skills' }
-        ]);
-        res.json({ message: 'Successfully joined the team!', team: populatedTeam });
+        if (action === 'accept') {
+            if (team.members.length >= team.teamSize) {
+                return res.status(400).json({ message: 'Team is already full' });
+            }
+            team.members.push(userId);
+
+            if (team.members.length === team.teamSize) {
+                team.status = 'Full';
+            }
+        }
+
+        await team.save();
+        res.status(200).json({
+            message: `Request ${action === 'accept' ? 'accepted' : 'rejected'} successfully`,
+            team
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error managing request', error: error.message });
     }
-    catch (error) {
-        res.status(500).json({
-            message: 'Failed to join team',
-            error: error.message
-        })
-    }
-}
+};
+
 
 const leaveTeam = async (req, res) => {
     const teamId = req.params.id;
@@ -124,7 +148,7 @@ const leaveTeam = async (req, res) => {
     catch (error) {
         res.status(500).json({
             message: 'Failed to leave team',
-            error:error.message
+            error: error.message
         })
     }
 }
@@ -134,13 +158,13 @@ const createTeam = async (req, res) => {
     const captainId = req.user._id;
     const { name, hackathon, teamSize, needs, projectIdea } = req.body;
 
-    if(teamSize<2 || teamSize>6){
+    if (teamSize < 2 || teamSize > 6) {
         return res.status(400).json({
             message: "Team size must be between 2 and 6 members."
         })
     }
 
-    if (!name || !hackathon || !needs || needs.length===0 ) {
+    if (!name || !hackathon || !needs || needs.length === 0) {
         return res.status(400).json({
             message: 'Please provide a name, hackathon ID, and team needs.'
         })
@@ -187,7 +211,7 @@ const createTeam = async (req, res) => {
 const getRecruitingTeams = async (req, res) => {
     try {
         const { hackathon, roleNeeded, onlyRecruiting } = req.query;
-        
+
         const query = {};
 
         if (onlyRecruiting === 'true' || !hackathon) {
@@ -221,41 +245,41 @@ const getRecruitingTeams = async (req, res) => {
     }
 }
 
-const removeMember = async(req,res) => {
-    const {id, userId} = req.params;
+const removeMember = async (req, res) => {
+    const { id, userId } = req.params;
     const captainId = req.user._id;
 
-    try{
-        const team= await Team.findById(id);
+    try {
+        const team = await Team.findById(id);
 
-        if(!team) return res.status(404).json({
-            message:'Team not found'
+        if (!team) return res.status(404).json({
+            message: 'Team not found'
         });
 
-        if(team.captain.toString() !== captainId.toString()){
+        if (team.captain.toString() !== captainId.toString()) {
             return res.status(403).json({
                 message: 'Only captains can remove members'
             });
         }
 
-        if(userId === team.captain.toString()){
+        if (userId === team.captain.toString()) {
             return res.status(400).json({
-                message:'Captain cannot be removed. Delete the team instead'
+                message: 'Captain cannot be removed. Delete the team instead'
             })
         }
 
         team.members = team.members.filter(m => m.toString() !== userId);
 
-        if(team.status === 'Full' && team.members.length < team.teamSize){
+        if (team.status === 'Full' && team.members.length < team.teamSize) {
             team.status = 'Recruiting';
         }
 
         await team.save();
-        res.json({message:'Member removed successfully', team});
+        res.json({ message: 'Member removed successfully', team });
 
 
     }
-    catch(error){
+    catch (error) {
         res.status(500).json({
             message: 'Server error',
             error: error.message
@@ -263,20 +287,21 @@ const removeMember = async(req,res) => {
     }
 }
 
-const deleteTeam = async(req,res) => {
-    const {id} = req.params;
+const deleteTeam = async (req, res) => {
+    const { id } = req.params;
     const userId = req.user._id;
 
-    try{
+    try {
         const team = await Team.findById(id);
 
-        if(!team) {
-            return res.status(404).json({message:
-                'Team not found'
+        if (!team) {
+            return res.status(404).json({
+                message:
+                    'Team not found'
             });
         }
 
-        if(team.captain.toString() !== userId.toString()){
+        if (team.captain.toString() !== userId.toString()) {
             return res.status(403).json({
                 message: 'Unauthorized: Only the captain can delete this team'
             });
@@ -288,23 +313,23 @@ const deleteTeam = async(req,res) => {
             message: 'Team delete successfully'
         })
     }
-    catch(error){
+    catch (error) {
         res.status(500).json({
-            message:'Error deleting team',
+            message: 'Error deleting team',
             error: error.message
         })
     }
 }
 
 const updateTeam = async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     const userId = req.user._id;
-    const {name, projectIdea, teamSize, needs} = req.body;
+    const { name, projectIdea, teamSize, needs } = req.body;
 
-    try{
+    try {
         const team = await Team.findById(id);
 
-        if(!team) return res.status(404).json({
+        if (!team) return res.status(404).json({
             message: 'Team not found'
         })
 
@@ -316,7 +341,7 @@ const updateTeam = async (req, res) => {
         const updatedTeam = await team.save();
         res.json(updatedTeam);
     }
-    catch(error){
+    catch (error) {
         res.status(500).json({
             message: 'Error updating team',
             error: error.message
@@ -324,4 +349,4 @@ const updateTeam = async (req, res) => {
     }
 }
 
-export { joinTeam, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams, removeMember, deleteTeam, updateTeam };
+export { requestToJoin, manageJoinRequest, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams, removeMember, deleteTeam, updateTeam };

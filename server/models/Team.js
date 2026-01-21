@@ -22,6 +22,12 @@ const TeamSchema = new mongoose.Schema({
             ref: 'User',
         }
     ],
+    requests: [
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'User'
+        }
+    ],
     teamSize: {
         type: Number,
         required: true,

@@ -15,23 +15,24 @@ const ManageTeam = () => {
     });
     const user = JSON.parse(localStorage.getItem('user'));
 
+    const fetchTeam = async () => {
+        try {
+            const config = { headers: { Authorization: `Bearer ${user.token}` } };
+            const { data } = await axios.get(`http://localhost:5000/api/teams/${teamId}`, config);
+            setTeam(data);
+            setFormData({
+                name: data.name,
+                projectIdea: data.projectIdea,
+                needs: data.needs ? data.needs.map(n => n.role).join(', ') : ''
+            });
+            setLoading(false);
+        } catch (error) {
+            console.error(error);
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchTeam = async () => {
-            try {
-                const config = { headers: { Authorization: `Bearer ${user.token}` } };
-                const { data } = await axios.get(`http://localhost:5000/api/teams/${teamId}`, config);
-                setTeam(data);
-                setFormData({
-                    name: data.name,
-                    projectIdea: data.projectIdea,
-                    needs: data.needs ? data.needs.map(n => n.role).join(', ') : ''
-                });
-                setLoading(false);
-            } catch (error) {
-                console.error(error);
-                setLoading(false);
-            }
-        };
         fetchTeam();
     }, [teamId, user.token]);
 
@@ -64,6 +65,21 @@ const ManageTeam = () => {
         }
     }
 
+    const handleDecision = async (requestingUserId, action) => {
+        try {
+            const config = { headers: { Authorization: `Bearer ${user.token}` } };
+            const { data } = await axios.post(
+                `http://localhost:5000/api/teams/${teamId}/manage-request`,
+                { userId: requestingUserId, action },
+                config
+            );
+            alert(data.message);
+            fetchTeam(); // Refresh the data to show updated member/request lists
+        } catch (error) {
+            alert(error.response?.data?.message || "Action failed");
+        }
+    };
+
     const handleRemoveMember = async (memberId) => {
         if (!window.confirm('Are you sure you want to remove this member?')) return;
 
@@ -74,18 +90,13 @@ const ManageTeam = () => {
                 }
             };
 
-            await axios.put(
+            await axios.delete(
                 `http://localhost:5000/api/teams/${teamId}/remove/${memberId}`,
-                {},
                 config
             );
 
             alert("Member removed successfully");
-
-            setTeam((prev) => ({
-                ...prev,
-                members: prev.members.filter((m) => m._id !== memberId),
-            }));
+            fetchTeam();
         }
         catch (error) {
             alert(error.response?.data?.message || "Error removing member");
@@ -108,7 +119,7 @@ const ManageTeam = () => {
 
             await axios.delete(`http://localhost:5000/api/teams/${teamId}`, config);
 
-            alert("Team delete successfully.");
+            alert("Team deleted successfully.");
             navigate(-1);
         }
         catch (error) {
@@ -116,14 +127,14 @@ const ManageTeam = () => {
         }
     }
 
-    if (loading) return <div className="p-10 font-mono">LOADING_MANAGEMENT_CONSOLE...</div>;
+    if (loading) return <div className="p-10 font-mono text-center">LOADING_MANAGEMENT_CONSOLE...</div>;
 
     return (
         <div className="max-w-4xl mx-auto p-10 bg-white min-h-screen">
-            <button onClick={() => navigate(-1)} className="text-xs font-bold uppercase mb-8">← Back</button>
+            <button onClick={() => navigate(-1)} className="text-xs font-bold uppercase mb-8 hover:underline">← Back</button>
 
             {isEditing ? (
-                <form onSubmit={handleUpdateTeam} className="mb-12 space-y-4 border border-black p-6">
+                <form onSubmit={handleUpdateTeam} className="mb-12 space-y-4 border-2 border-black p-6">
                     <div>
                         <label className="text-[10px] font-bold uppercase tracking-widest block mb-1">Team Name</label>
                         <input
@@ -151,7 +162,7 @@ const ManageTeam = () => {
                         />
                     </div>
                     <div className="flex gap-2">
-                        <button type="submit" className="bg-black text-white px-4 py-2 text-xs font-bold uppercase">Save Changes</button>
+                        <button type="submit" className="bg-black text-white px-4 py-2 text-xs font-bold uppercase hover:invert">Save Changes</button>
                         <button type="button" onClick={() => setIsEditing(false)} className="border border-black px-4 py-2 text-xs font-bold uppercase">Cancel</button>
                     </div>
                 </form>
@@ -182,6 +193,43 @@ const ManageTeam = () => {
                 </div>
             )}
 
+            {/* JOIN REQUESTS SECTION */}
+            <div className="mt-12 border-t-2 border-black pt-8">
+                <h2 className="text-xl font-bold uppercase mb-6 flex justify-between items-center">
+                    Pending Requests
+                    <span className="bg-yellow-400 text-[10px] px-2 py-1">{team?.requests?.length || 0}</span>
+                </h2>
+                {team?.requests?.length > 0 ? (
+                    <div className="grid gap-4">
+                        {team.requests.map((request) => (
+                            <div key={request._id} className="border-2 border-black p-4 flex justify-between items-center bg-yellow-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                <div>
+                                    <p className="font-bold uppercase text-sm">{request.name}</p>
+                                    <p className="text-[10px] text-gray-500 font-mono">{request.email}</p>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button 
+                                        onClick={() => handleDecision(request._id, 'accept')}
+                                        className="bg-black text-white text-[10px] font-bold uppercase px-3 py-2 hover:bg-green-600 transition-colors"
+                                    >
+                                        Accept
+                                    </button>
+                                    <button 
+                                        onClick={() => handleDecision(request._id, 'reject')}
+                                        className="border border-black text-[10px] font-bold uppercase px-3 py-2 hover:bg-red-600 hover:text-white transition-colors"
+                                    >
+                                        Decline
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-xs text-gray-400 italic uppercase">No pending join requests.</p>
+                )}
+            </div>
+
+            {/* ROSTER SECTION */}
             <div className="mt-12 border-t-2 border-black pt-8">
                 <h2 className="text-xl font-bold uppercase mb-6">Current Roster ({team?.members?.length}/{team?.teamSize})</h2>
                 <div className="grid gap-4">
@@ -196,7 +244,7 @@ const ManageTeam = () => {
                             ) : (
                                 <button
                                     onClick={() => handleRemoveMember(member._id)}
-                                    className="text-[10px] font-bold text-red-600 uppercase border border-red-600 px-2 py-1  hover:bg-red-600 hover:text-white transition cursor-pointer"
+                                    className="text-[10px] font-bold text-red-600 uppercase border border-red-600 px-2 py-1 hover:bg-red-600 hover:text-white transition cursor-pointer"
                                 >
                                     Remove
                                 </button>
