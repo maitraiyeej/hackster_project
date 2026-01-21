@@ -24,7 +24,6 @@ const ExplorePage = () => {
         fetchAll();
     }, []);
 
-    // Filter logic: Checks Name, Description, and TechStacks
     useEffect(() => {
         const query = search.toLowerCase();
         const results = hackathons.filter(h => 
@@ -42,7 +41,6 @@ const ExplorePage = () => {
                     <h1 className="text-6xl font-black uppercase tracking-tighter">Global Feed</h1>
                     <p className="text-xs font-bold uppercase tracking-[0.3em] text-gray-400 mt-2">Discover every active event on HackSter</p>
                     
-                    {/* FULL-WIDTH SEARCH BAR */}
                     <div className="mt-8">
                         <input 
                             type="text" 

@@ -22,7 +22,7 @@ const Navbar = () => {
             </Link>
 
             <div className="flex items-center gap-8">
-                <Link to="/" className="text-[10px] font-bold uppercase tracking-[0.2em] hover:underline decoration-2 underline-offset-4">
+                <Link to="/" className="text-[12px] font-bold uppercase tracking-[0.2em] hover:underline decoration-2 underline-offset-4">
                     Home
                 </Link>
 
@@ -39,7 +39,12 @@ const Navbar = () => {
 
                         <div className="flex flex-col items-end">
                             <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 leading-none">Logged in as</span>
-                            <span className="text-xs font-bold uppercase tracking-tighter">{user.name}</span>
+                            <Link 
+                                to={`/user/${user._id}`} 
+                                className="text-s font-bold uppercase tracking-tighter hover:underline hover:text-blue-600 transition-colors"
+                            >
+                                {user.name} 
+                            </Link>
                         </div>
 
                         <button
