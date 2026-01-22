@@ -26,14 +26,26 @@ const RegisterPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await register(formData).unwrap();
-            alert("Registration Successful!");
-            navigate('/');
+            // FIX: Assign the result of unwrap() to a variable so we can use it
+            const userData = await register(formData).unwrap();
+            
+            alert("Registration Successful! Let's complete your profile.");
+            
+            // Extract the userId from the response
+            const userId = userData._id || userData.id || userData.user?._id;
+            
+            if (userId) {
+                // Redirect immediately to the profile edit page
+                navigate(`/user/${userId}`);
+            } else {
+                navigate('/');
+            }
         }
         catch (error) {
             console.log('Registration failed:', error);
         }
     }
+
     return (
         <div className='flex h-full items-center justify-center p-4'>
             <div className='w-full max-w-md rounded-xl bg-white p-8 shadow-2xl'>
@@ -117,5 +129,4 @@ const RegisterPage = () => {
     );
 }
 
-
-export default RegisterPage
+export default RegisterPage;
