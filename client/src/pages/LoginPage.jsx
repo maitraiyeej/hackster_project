@@ -17,7 +17,7 @@ const LoginPage = () => {
         try {
             const userData = await login(formData).unwrap();
 
-            dispatch(setCredentials(userData));
+             dispatch(setCredentials(userData));
 
             navigate('/');
         }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import LoadingScreen from './LoadingScreen';
 
 const HackathonDetails = () => {
     const [teams, setTeams] = useState([]);
@@ -72,7 +73,7 @@ const HackathonDetails = () => {
         }
     };
 
-    if (loading) return <div className="p-10 font-mono">LOADING_DETAILS...</div>;
+    if (loading) return <LoadingScreen message='LOADING_DETAILS...'/>
     if (!hackathon) return <div className="p-10">HACKATHON_NOT_FOUND</div>;
 
     const getStatusStyles = (status) => {

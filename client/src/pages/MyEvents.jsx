@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import LoadingScreen from './LoadingScreen';
+
 
 const MyEvents = () => {
     const [myEvents, setMyEvents] = useState([]);
@@ -47,7 +49,7 @@ const MyEvents = () => {
                 </header>
 
                 {loading ? (
-                    <div className="animate-pulse text-xs font-bold uppercase tracking-widest">Loading Records...</div>
+                    <LoadingScreen message='LOADING_RECORDS...'/>
                 ) : (
                     <div className="space-y-4">
                         {myEvents.map((event) => (
@@ -62,14 +64,14 @@ const MyEvents = () => {
                                     <h3 className="text-2xl font-black uppercase tracking-tighter italic">{event.name}</h3>
                                 </div>
                                 <div className="flex gap-3 mt-4 md:mt-0">
-                                    <button 
-                                        onClick={() => navigate(`/hackathon/${event._id}`)} 
+                                    <button
+                                        onClick={() => navigate(`/hackathon/${event._id}`)}
                                         className="px-6 py-2 border border-current text-[10px] font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all"
                                     >
                                         View Public
                                     </button>
-                                    <button 
-                                        onClick={() => handleDelete(event._id)} 
+                                    <button
+                                        onClick={() => handleDelete(event._id)}
                                         className="px-6 py-2 bg-white text-red-600 border border-red-600 text-red-600 text-[10px] font-bold uppercase hover:bg-red-600 hover:text-white transition-all"
                                     >
                                         Delete Event ×

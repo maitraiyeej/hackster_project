@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { LoaderFive } from '@/components/ui/loader';
+import LoadingScreen from './LoadingScreen';
 
 const ManageTeam = () => {
     const { teamId } = useParams();
@@ -56,7 +58,7 @@ const ManageTeam = () => {
             };
 
             const { data } = await axios.put(`http://localhost:5000/api/teams/${teamId}`, dataToSend, config);
-            
+
             setTeam(data);
             setIsEditing(false);
             alert('Team profile updated successfully!');
@@ -75,7 +77,7 @@ const ManageTeam = () => {
                 config
             );
             alert(data.message);
-            fetchTeam(); 
+            fetchTeam();
         } catch (error) {
             alert(error.response?.data?.message || "Action failed");
         }
@@ -128,8 +130,11 @@ const ManageTeam = () => {
         }
     }
 
-    if (loading) return <div className="p-10 font-mono text-center">LOADING_MANAGEMENT_CONSOLE...</div>;
-
+    if (loading) {
+        return (
+            <LoadingScreen message='LOADING_MANAGEMENT_CONSOLE...'/>
+        );
+    }
     return (
         <div className="max-w-4xl mx-auto p-10 bg-white min-h-screen">
             <button onClick={() => navigate(-1)} className="text-xs font-bold uppercase mb-8 hover:underline">← Back</button>
@@ -211,13 +216,13 @@ const ManageTeam = () => {
                                     <p className="text-[10px] text-gray-500 font-mono">{request.email}</p>
                                 </div>
                                 <div className="flex gap-2">
-                                    <button 
+                                    <button
                                         onClick={() => handleDecision(request._id, 'accept')}
                                         className="bg-black text-white text-[10px] font-bold uppercase px-3 py-2 hover:bg-green-600 transition-colors"
                                     >
                                         Accept
                                     </button>
-                                    <button 
+                                    <button
                                         onClick={() => handleDecision(request._id, 'reject')}
                                         className="border border-black text-[10px] font-bold uppercase px-3 py-2 hover:bg-red-600 hover:text-white transition-colors"
                                     >

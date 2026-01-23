@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import LoadingScreen from './LoadingScreen';
 
 const ExplorePage = () => {
     const [hackathons, setHackathons] = useState([]);
@@ -53,7 +54,7 @@ const ExplorePage = () => {
                 </header>
 
                 {loading ? (
-                    <div className="text-xs font-bold uppercase animate-pulse">Scanning Network...</div>
+                    <LoadingScreen message='SCANNING_NETWORK...'/>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {filteredHackathons.map((h) => (

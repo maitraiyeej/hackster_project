@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useGetHackathonsQuery } from '../services/hackathonApi';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import LoadingScreen from './LoadingScreen';
 
 const HomePage = ({ user }) => {
   const [myEventsCount, setMyEventsCount] = useState(0);
@@ -27,7 +28,7 @@ const HomePage = ({ user }) => {
     fetchAdminStats();
   }, [isAdmin, user]);
 
-  if (isLoading) return <div className="flex h-full items-center justify-center font-mono text-xl">LOADING_DATA...</div>;
+  if (isLoading) return <LoadingScreen message='LOADING_DATA...'/>;
   if (error) return <div className="flex h-full items-center justify-center text-red-500">Error connecting to API.</div>;
 
   return (

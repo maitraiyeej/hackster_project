@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useRegisterMutation } from '../services/authApi';
+import LoadingScreen from './LoadingScreen';
 
 
 const RegisterPage = () => {
@@ -20,7 +21,7 @@ const RegisterPage = () => {
     }
 
     const handleRoleChange = (selectedRole) => {
-        setFormData({...formData, role:selectedRole});
+        setFormData({ ...formData, role: selectedRole });
     }
 
     const handleSubmit = async (e) => {
@@ -28,12 +29,12 @@ const RegisterPage = () => {
         try {
             // FIX: Assign the result of unwrap() to a variable so we can use it
             const userData = await register(formData).unwrap();
-            
+
             alert("Registration Successful! Let's complete your profile.");
-            
+
             // Extract the userId from the response
             const userId = userData._id || userData.id || userData.user?._id;
-            
+
             if (userId) {
                 // Redirect immediately to the profile edit page
                 navigate(`/user/${userId}`);
@@ -50,7 +51,7 @@ const RegisterPage = () => {
         <div className='flex h-full items-center justify-center p-4'>
             <div className='w-full max-w-md rounded-xl bg-white p-8 shadow-2xl'>
                 <h2 className='mb-6 text-center text-3xl font-bold tracking-tighter text-black uppercase italic'>Create Account</h2>
-                
+
                 {error && (
                     <div className='mb-4 rounded bg-red-50 border border-red-200 p-3 text-sm text-red-700'>
                         {error.data?.message || 'Registration failed. Try again.'}
@@ -66,22 +67,20 @@ const RegisterPage = () => {
                             <button
                                 type="button"
                                 onClick={() => handleRoleChange('User')}
-                                className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-widest border-2 transition-all ${
-                                    formData.role === 'User' 
-                                    ? 'bg-black text-white border-black' 
-                                    : 'bg-white text-black border-gray-200 hover:border-black'
-                                }`}
+                                className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-widest border-2 transition-all ${formData.role === 'User'
+                                        ? 'bg-black text-white border-black'
+                                        : 'bg-white text-black border-gray-200 hover:border-black'
+                                    }`}
                             >
                                 Hacker
                             </button>
                             <button
                                 type="button"
                                 onClick={() => handleRoleChange('Admin')}
-                                className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-widest border-2 transition-all ${
-                                    formData.role === 'Admin' 
-                                    ? 'bg-black text-white border-black' 
-                                    : 'bg-white text-black border-gray-200 hover:border-black'
-                                }`}
+                                className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-widest border-2 transition-all ${formData.role === 'Admin'
+                                        ? 'bg-black text-white border-black'
+                                        : 'bg-white text-black border-gray-200 hover:border-black'
+                                    }`}
                             >
                                 Organizer
                             </button>
@@ -112,12 +111,17 @@ const RegisterPage = () => {
                         />
                     </div>
 
-                    <button type='submit' disabled={isLoading} 
-                        className={`border-2 w-full mt-6 py-4 font-bold uppercase tracking-[0.2em] text-xs transition-all ${
-                            isLoading ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-black text-white hover:invert'
-                        }`}
+                    <button
+                        type='submit'
+                        disabled={isLoading}
+                        className={`border-2 w-full mt-6 py-4 font-bold uppercase tracking-[0.2em] text-xs transition-all ${isLoading ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-black text-white hover:invert'
+                            }`}
                     >
-                        {isLoading ? 'Processing...' : 'Create Account →'}
+                        {isLoading ? (
+                            <LoadingScreen message='PROCESSING...'/>
+                        ) : (
+                            'Create Account →'
+                        )}
                     </button>
                 </form>
 
