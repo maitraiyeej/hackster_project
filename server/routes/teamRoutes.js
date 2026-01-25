@@ -1,18 +1,21 @@
 import express from 'express';
 import { 
-    requestToJoin,      // Updated
-    manageJoinRequest,  // New
+    requestToJoin,      
+    manageJoinRequest, 
     leaveTeam, 
     getTeamDetails, 
     createTeam, 
     getRecruitingTeams, 
     removeMember, 
     deleteTeam, 
-    updateTeam 
+    updateTeam, 
+    getMyTeam
 } from '../controllers/teamController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
+
+router.get('/my-team', protect, getMyTeam);
 
 router.route('/')
     .get(getRecruitingTeams)

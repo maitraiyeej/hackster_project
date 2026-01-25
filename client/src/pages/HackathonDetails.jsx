@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import LoadingScreen from './LoadingScreen';
+import { useSelector } from 'react-redux';
 
 const HackathonDetails = () => {
     const [teams, setTeams] = useState([]);
@@ -9,7 +10,9 @@ const HackathonDetails = () => {
     const navigate = useNavigate();
     const [hackathon, setHackathon] = useState(null);
     const [loading, setLoading] = useState(true);
-    const user = JSON.parse(localStorage.getItem('user'));
+    
+    // Get user from Redux store
+    const { user } = useSelector((state) => state.auth);
 
     useEffect(() => {
         const fetchAllData = async () => {
@@ -50,7 +53,7 @@ const HackathonDetails = () => {
             };
             const res = await axios.post(`http://localhost:5000/api/teams/${teamId}/request`, {}, config);
             alert(res.data.message || "Join request sent to captain!");
-            
+
             const resTeams = await axios.get(`http://localhost:5000/api/teams?hackathon=${id}`);
             setTeams(resTeams.data);
         } catch (error) {
@@ -73,7 +76,7 @@ const HackathonDetails = () => {
         }
     };
 
-    if (loading) return <LoadingScreen message='LOADING_DETAILS...'/>
+    if (loading) return <LoadingScreen message='LOADING_DETAILS...' />
     if (!hackathon) return <div className="p-10">HACKATHON_NOT_FOUND</div>;
 
     const getStatusStyles = (status) => {
@@ -128,12 +131,24 @@ const HackathonDetails = () => {
                         <h2 className='text-4xl font-bold tracking-tighter'>Recruiting Teams</h2>
                         <p className='text-gray-500 uppercase text-xs tracking-widest mt-2'>Find your collaborators</p>
                     </div>
-                    <button
-                        onClick={handleCreateTeam}
-                        className="border-2 border-black bg-black text-white px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-black transition-all whitespace-nowrap"
-                    >
-                        Create a Team +
-                    </button>
+                    
+                    <div className="flex gap-3">
+                        {/* ADMIN BUTTON: Only visible to Admins */}
+                        {user?.role === 'Admin' && (
+                            <button
+                                onClick={() => navigate(`/my-events`)}
+                                className="border-2 border-black bg-white text-black px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-black hover:text-white transition-all whitespace-nowrap"
+                            >
+                                Admin: All Teams
+                            </button>
+                        )}
+                        <button
+                            onClick={handleCreateTeam}
+                            className="border-2 border-black bg-black text-white px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-black transition-all whitespace-nowrap"
+                        >
+                            Create a Team +
+                        </button>
+                    </div>
                 </div>
 
                 <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6 pb-24">
@@ -164,14 +179,13 @@ const HackathonDetails = () => {
                                         {team.projectIdea}
                                     </p>
 
-                                    {/* CLICKABLE ROSTER SECTION */}
                                     <div className="mb-4">
                                         <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2">Current Roster:</p>
                                         <div className="flex flex-wrap gap-x-3 gap-y-1">
                                             {team.members?.map((member, idx) => (
-                                                <Link 
-                                                    key={idx} 
-                                                    to={`/user/${member._id || member}`} 
+                                                <Link
+                                                    key={idx}
+                                                    to={`/user/${member._id || member}`}
                                                     className="text-[10px] font-bold uppercase hover:underline decoration-black"
                                                 >
                                                     {member.name || "Hacker"} {idx < team.members.length - 1 ? "•" : ""}
@@ -194,18 +208,28 @@ const HackathonDetails = () => {
                                                 <span className="text-center text-[10px] font-bold text-green-600 uppercase tracking-widest mb-1">
                                                     ✓ YOU_ARE_A_MEMBER
                                                 </span>
-                                                {isCaptain ? (
+                                                
+                                                <button
+                                                    onClick={() => navigate(`/hackathon/${id}/my-team`)}
+                                                    className="w-full border-2 bg-yellow-400 text-black border-black py-3 text-xs font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none"
+                                                >
+                                                    View Team Dashboard →
+                                                </button>
+
+                                                {isCaptain && (
                                                     <button
                                                         onClick={() => navigate(`/manage-team/${team._id}`)}
                                                         className="w-full border-2 bg-black text-white border-black py-3 text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all"
                                                     >
-                                                        Manage Team Settings →
+                                                        Manage Team Settings (Admin)
                                                     </button>
-                                                ) : (
+                                                )}
+                                                
+                                                {!isCaptain && (
                                                     <button
                                                         disabled={isSubmitted}
                                                         onClick={() => handleLeaveTeam(team._id)}
-                                                        className={`w-full py-3 text-xs font-bold uppercase tracking-widest transition-all ${isSubmitted
+                                                        className={`border-2 border-red-600 w-full py-3 text-xs font-bold uppercase tracking-widest transition-all shadow-[4px_4px_0px_0px_rgba(220,38,38,1)] ${isSubmitted
                                                             ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
                                                             : 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white'
                                                             }`}

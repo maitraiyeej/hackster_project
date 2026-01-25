@@ -41,11 +41,17 @@ const requestToJoin = async (req, res) => {
 
     try {
         const team = await Team.findById(teamId);
-
         if (!team) return res.status(404).json({ message: 'Team not found' });
 
-        if (team.members.map(m => m.toString()).includes(userId.toString())) {
-            return res.status(400).json({ message: "You are already a member of this team." });
+        const existingTeamMembership = await Team.findOne({
+            hackathon: team.hackathon,
+            members: userId
+        });
+
+        if (existingTeamMembership) {
+            return res.status(400).json({ 
+                message: "You are already a member of a team in this hackathon. You must leave your current team to join another." 
+            });
         }
 
         if (team.requests && team.requests.map(r => r.toString()).includes(userId.toString())) {
@@ -64,6 +70,7 @@ const requestToJoin = async (req, res) => {
         res.status(500).json({ message: 'Failed to send request', error: error.message });
     }
 };
+
 
 const manageJoinRequest = async (req, res) => {
     const { id } = req.params;
@@ -178,6 +185,17 @@ const createTeam = async (req, res) => {
     }
 
     try {
+        const existingMembership = await Team.findOne({
+            hackathon: hackathon,
+            members: captainId
+        });
+
+        if (existingMembership) {
+            return res.status(400).json({ 
+                message: "You are already a member/captain of a team in this hackathon." 
+            });
+        }
+
         const team = await Team.create({
             name,
             hackathon,
@@ -204,6 +222,43 @@ const createTeam = async (req, res) => {
             message: 'Failed to create team',
             error: error.message
         })
+    }
+}
+
+const getMyTeam = async(req, res) => {
+    try {
+        const { hackathonId } = req.query;
+
+        if (!hackathonId) {
+            return res.status(400).json({ 
+                message: 'Hackathon ID is required to fetch the correct team.' 
+            });
+        }
+
+        const team = await Team.findOne({ 
+            members: req.user._id,
+            hackathon: hackathonId 
+        })
+        .populate([
+            { path: 'hackathon', select: 'name organization startDate' },
+            { path: 'captain', select: 'name email role skills' },
+            { path: 'members', select: 'name email role skills' },
+            { path: 'requests', select: 'name email role skills' }
+        ]);
+
+        if (!team) {
+            return res.status(404).json({ 
+                message: 'You are not a member of a team for this specific hackathon.' 
+            });
+        }
+
+        return res.status(200).json(team); 
+    }
+    catch (error) {
+        return res.status(500).json({ 
+            message: "Error fetching team dashboard", 
+            error: error.message 
+        });
     }
 }
 
@@ -349,4 +404,4 @@ const updateTeam = async (req, res) => {
     }
 }
 
-export { requestToJoin, manageJoinRequest, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams, removeMember, deleteTeam, updateTeam };
+export { requestToJoin,getMyTeam, manageJoinRequest, leaveTeam, getTeamDetails, createTeam, getRecruitingTeams, removeMember, deleteTeam, updateTeam };
