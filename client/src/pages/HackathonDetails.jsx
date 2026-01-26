@@ -139,7 +139,7 @@ const HackathonDetails = () => {
                                 onClick={() => navigate(`/my-events`)}
                                 className="border-2 border-black bg-white text-black px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-black hover:text-white transition-all whitespace-nowrap"
                             >
-                                Admin: All Teams
+                                Admin: All Events
                             </button>
                         )}
                         <button
