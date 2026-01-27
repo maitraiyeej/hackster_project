@@ -41,7 +41,7 @@ const MyEvents = () => {
     };
 
     return (
-        <div className="w-full min-h-screen bg-white p-6 md:p-12">
+        <div className="w-full min-h-screen bg-transparent p-6 md:p-12">
             <div className="max-w-4xl mx-auto">
                 <header className="mb-12 border-b-4 border-black pb-6">
                     <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">Your Events</h1>

@@ -36,7 +36,7 @@ const ExplorePage = () => {
     }, [search, hackathons]);
 
     return (
-        <div className="w-full min-h-screen bg-white p-10">
+        <div className="w-full min-h-screen bg-transparent p-10">
             <div className="max-w-7xl mx-auto">
                 <header className="mb-12 border-b-2 border-black pb-6">
                     <h1 className="text-6xl font-black uppercase tracking-tighter">Global Feed</h1>

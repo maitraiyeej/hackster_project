@@ -1,75 +1,83 @@
-// client/src/components/Navbar.jsx
+import React from "react";
+import { FloatingDock } from "./ui/floating-dock"; // Ensure path is correct
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { logout } from '../features/auth/authSlice';
-
+import {
+  IconHome,
+  IconSearch,
+  IconPlus,
+  IconUser,
+  IconLogout,
+  IconLockOpen
+} from "@tabler/icons-react";
 
 const Navbar = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  const isAdmin = user?.role === 'Admin';
 
-    const { user } = useSelector((state) => state.auth);
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login');
+  };
 
-    const handleLogout = () => {
-        dispatch(logout()); 
-        navigate('/login');
-    };
+  const links = [
+    {
+      title: "Home",
+      icon: <IconHome className="h-full w-full text-black" />,
+      href: "/",
+    },
+    {
+      title: "Explore",
+      icon: <IconSearch className="h-full w-full text-black" />,
+      href: "/explore",
+    },
+    ...(isAdmin ? [{
+      title: "Create Event",
+      icon: <IconPlus className="h-full w-full text-black" />,
+      href: "/admin",
+    }] : []),
+    ...(user ? [
+      {
+        title: `Profile: ${user.name}`,
+        icon: <IconUser className="h-full w-full text-black" />,
+        href: `/user/${user._id}`,
+      },
+      {
+        title: "Logout",
+        icon: <IconLogout className="h-full w-full text-black" />,
+        onClick: handleLogout, 
+        href: "#", 
+      }
+    ] : [
+      {
+        title: "Login",
+        icon: <IconLockOpen className="h-full w-full text-black" />,
+        href: "/login",
+      }
+    ]),
+  ];
 
-    return (
-        <nav className="w-full h-20 bg-white border-b-2 border-black flex justify-between items-center px-10 sticky top-0 z-50">
-            <Link to="/" className="text-3xl font-black tracking-tighter uppercase italic">
-                Hack<span className="bg-black text-white px-1 not-italic">Ster</span>
-            </Link>
+  return (
+    <>
+      <div className="fixed top-0 left-0 w-full h-20 flex justify-between items-center px-10 z-50 pointer-events-none">
+        <Link to="/" className="text-3xl font-black tracking-tighter uppercase italic group pointer-events-auto">
+            HACK<span className="bg-black text-white px-1 not-italic group-hover:bg-[#BEF264] group-hover:text-black transition-colors">STER</span>
+        </Link>
+      </div>
 
-            <div className="flex items-center gap-8">
-                <Link to="/" className="text-[12px] font-bold uppercase tracking-[0.2em] hover:underline decoration-2 underline-offset-4">
-                    Home
-                </Link>
-
-                {user ? (
-                    <div className="flex items-center gap-6">
-                        {user.role === 'Admin' && (
-                            <Link 
-                                to="/admin" 
-                                className="border-2 text-[10px] font-bold uppercase tracking-[0.2em] bg-black text-white px-3 py-1 hover:invert transition-all"
-                            >
-                                + Create Event
-                            </Link>
-                        )}
-
-                        <div className="flex flex-col items-end">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 leading-none">Logged in as</span>
-                            <Link 
-                                to={`/user/${user._id}`} 
-                                className="text-s font-bold uppercase tracking-tighter hover:underline hover:text-blue-600 transition-colors"
-                            >
-                                {user.name} 
-                            </Link>
-                        </div>
-
-                        <button
-                            onClick={handleLogout}
-                            className="shadow-[4px_4px_0px_0px_rgba(220,38,38,1)] border-2 border-black px-5 py-2 text-[10px] text-red-600 bg-red-100 border-red-600 font-bold uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all"
-                        >
-                            Logout ×
-                        </button>
-                    </div>
-                ) : (
-                    <div className="flex items-center gap-4">
-                        <Link to="/login" className="text-[10px] font-bold uppercase tracking-widest">
-                            Login
-                        </Link>
-                        <Link 
-                            to="/register" 
-                            className="bg-black text-white border-2 border-black px-6 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all"
-                        >
-                            Register →
-                        </Link>
-                    </div>
-                )}
-            </div>
-        </nav>
-    );
+      <div className="fixed bottom-8 left-0 right-0 flex items-center justify-center z-50 pointer-events-none">
+        <div className="pointer-events-auto bg-transparent backdrop-blur-md border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-2xl p-2">
+          <FloatingDock
+            items={links}
+            desktopClassName="bg-transparent"
+          />
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Navbar;

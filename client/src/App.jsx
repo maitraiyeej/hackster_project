@@ -19,7 +19,7 @@ function App() {
 
   return (
     <Router>
-      <div className="flex flex-col min-h-screen bg-white">
+      <div className="flex flex-col min-h-screen bg-transparent mt-7">
         <Navbar /> 
         <main>
           <Routes>

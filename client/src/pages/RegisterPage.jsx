@@ -72,7 +72,7 @@ const RegisterPage = () => {
                                         : 'bg-white text-black border-gray-200 hover:border-black'
                                     }`}
                             >
-                                Hacker
+                                Builder
                             </button>
                             <button
                                 type="button"

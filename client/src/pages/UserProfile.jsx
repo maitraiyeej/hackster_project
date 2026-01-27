@@ -69,7 +69,7 @@ const UserProfile = () => {
     const isOwner = loggedInUser && profile ? loggedInUser._id === profile._id : false;
 
     return (
-        <div className="max-w-4xl mx-auto p-10 bg-white min-h-screen">
+        <div className="max-w-4xl mx-auto p-10 bg-transparent min-h-screen">
             <div className="flex justify-between items-center mb-8">
                 <button onClick={() => navigate(-1)} className="text-xs font-bold uppercase hover:underline">
                     ← Back

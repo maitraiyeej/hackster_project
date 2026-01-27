@@ -136,7 +136,7 @@ const ManageTeam = () => {
         );
     }
     return (
-        <div className="max-w-4xl mx-auto p-10 bg-white min-h-screen">
+        <div className="max-w-4xl mx-auto p-10 bg-transparent min-h-screen">
             <button onClick={() => navigate(-1)} className="text-xs font-bold uppercase mb-8 hover:underline">← Back</button>
 
             {isEditing ? (

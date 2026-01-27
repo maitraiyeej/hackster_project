@@ -93,7 +93,7 @@ const HackathonDetails = () => {
     }
 
     return (
-        <div className='w-full min-h-screen bg-white'>
+        <div className='w-full min-h-screen bg-transparent'>
             <div className="max-w-5xl mx-auto p-10">
                 <span className="text-xs font-bold uppercase tracking-widest bg-black text-white px-2 py-1">
                     {hackathon.location || 'Remote'}
