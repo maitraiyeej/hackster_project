@@ -74,8 +74,8 @@ const LoginPage = () => {
                 focus:outline-none
                 focus:bg-gray-200
                 focus:shadow-none
-                focus:translate-x-[6px]
-                focus:translate-y-[6px]
+                focus:translate-x-[4px]
+                focus:translate-y-[4px]
                 transition-all
               "
                         />
@@ -99,8 +99,8 @@ const LoginPage = () => {
                 focus:outline-none
                 focus:bg-gray-200
                 focus:shadow-none
-                focus:translate-x-[6px]
-                focus:translate-y-[6px]
+                focus:translate-x-[4px]
+                focus:translate-y-[4px]
                 transition-all
               "
                         />
@@ -119,8 +119,8 @@ const LoginPage = () => {
                     shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
                     hover:bg-blue-300 hover:text-black
                     active:shadow-none
-                    active:translate-x-[8px]
-                    active:translate-y-[8px]
+                    active:translate-x-[4px]
+                    active:translate-y-[4px]
                   `
                             }
             `}

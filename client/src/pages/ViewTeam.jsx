@@ -206,7 +206,7 @@ const ViewTeam = () => {
                                         key={index}
                                         className={`p-2 border-2 ${m.sender?._id === user._id ? 'border-yellow-400 self-end bg-zinc-800' : 'border-white self-start'} max-w-[90%]`}
                                     >
-                                        <Link to={`/profile/${m.sender?._id}`} className="text-[9px] font-black uppercase text-cyan-400 mb-1 leading-none hover:underline block">
+                                        <Link to={`/user/${m.sender?._id}`} className="text-[9px] font-black uppercase text-cyan-400 mb-1 leading-none hover:underline block">
                                             {m.sender?.name || "Unknown"}
                                         </Link>
                                         <p className="text-xs font-mono break-words">{m.text}</p>
