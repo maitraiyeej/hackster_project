@@ -138,7 +138,7 @@ const HomePage = ({ user }) => {
         <div className="p-8 flex items-center justify-center">
           <BrutalistButton
             onClick={() => navigate(isAdmin ? '/my-events' : '/explore')}
-            color='bg-cyan-300'
+            color='bg-[#91E1F2]'
             shadowSize='4px'
             className="text-[10px] tracking-[0.2em] flex justify-between items-center w-full h-14 px-4"
           >
@@ -162,7 +162,7 @@ const HomePage = ({ user }) => {
                 className="block no-underline text-black group"
               >
                 <BrutalistCard
-                  color="bg-white" /* White card on Gray background looks professional */
+                  color="bg-white" 
                   shadowSize="8px"
                   className="hover:cursor-pointer"
                 >

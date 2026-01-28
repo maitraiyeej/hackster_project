@@ -9,7 +9,9 @@ import {
   IconPlus,
   IconUser,
   IconLogout,
-  IconLockOpen
+  IconLockOpen,
+  IconLogin,
+  IconUserPlus
 } from "@tabler/icons-react";
 
 const Navbar = () => {
@@ -28,34 +30,49 @@ const Navbar = () => {
       title: "Home",
       icon: <IconHome className="h-full w-full text-black" />,
       href: "/",
+      color: '#FFFFFF'
     },
     {
       title: "Explore",
       icon: <IconSearch className="h-full w-full text-black" />,
       href: "/explore",
+      color: "#91E1F2"
     },
     ...(isAdmin ? [{
       title: "Create Event",
       icon: <IconPlus className="h-full w-full text-black" />,
       href: "/admin",
+      color: '#BEF264'
     }] : []),
     ...(user ? [
       {
-        title: `Profile: ${user.name}`,
+        title: `Profile`,
         icon: <IconUser className="h-full w-full text-black" />,
         href: `/user/${user._id}`,
+        color: '#D1D5DB'
       },
       {
         title: "Logout",
         icon: <IconLogout className="h-full w-full text-black" />,
         onClick: handleLogout, 
         href: "#", 
+        color: "#fca5a5",
       }
     ] : [
       {
         title: "Login",
-        icon: <IconLockOpen className="h-full w-full text-black" />,
+        icon: <IconLogin className="h-full w-full text-black" />,
         href: "/login",
+        color: '#D1D5DB'
+
+      },
+      {
+        title: "Register",
+        icon: <IconUserPlus className="h-full w-full text-black" />,
+        href: "/register",
+        color: '#D1D5DB'
+
+        
       }
     ]),
   ];
@@ -69,7 +86,7 @@ const Navbar = () => {
       </div>
 
       <div className="fixed bottom-8 left-0 right-0 flex items-center justify-center z-50 pointer-events-none">
-        <div className="pointer-events-auto bg-transparent backdrop-blur-md border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-2xl p-2">
+        <div className="pointer-events-auto">
           <FloatingDock
             items={links}
             desktopClassName="bg-transparent"

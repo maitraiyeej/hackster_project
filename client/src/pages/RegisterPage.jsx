@@ -1,136 +1,201 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useRegisterMutation } from '../services/authApi';
-import LoadingScreen from './LoadingScreen';
-
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useRegisterMutation } from "../services/authApi";
+import BrutalistCard from "@/components/ui/BrutalistCard";
 
 const RegisterPage = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        role: 'User'
-    })
-
     const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        password: "",
+        role: "User",
+    });
 
     const [register, { isLoading, error }] = useRegisterMutation();
 
-    const handleChange = (e) => {
+    const handleChange = (e) =>
         setFormData({ ...formData, [e.target.name]: e.target.value });
-    }
 
-    const handleRoleChange = (selectedRole) => {
-        setFormData({ ...formData, role: selectedRole });
-    }
+    const handleRoleChange = (role) =>
+        setFormData({ ...formData, role });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // FIX: Assign the result of unwrap() to a variable so we can use it
             const userData = await register(formData).unwrap();
-
-            alert("Registration Successful! Let's complete your profile.");
-
-            // Extract the userId from the response
             const userId = userData._id || userData.id || userData.user?._id;
-
-            if (userId) {
-                // Redirect immediately to the profile edit page
-                navigate(`/user/${userId}`);
-            } else {
-                navigate('/');
-            }
+            navigate(userId ? `/user/${userId}` : "/");
+        } catch (err) {
+            console.error("Registration failed:", err);
         }
-        catch (error) {
-            console.log('Registration failed:', error);
-        }
-    }
+    };
 
     return (
-        <div className='flex h-full items-center justify-center p-4'>
-            <div className='w-full max-w-md rounded-xl bg-white p-8 shadow-2xl'>
-                <h2 className='mb-6 text-center text-3xl font-bold tracking-tighter text-black uppercase italic'>Create Account</h2>
+        <div className="flex min-h-[80vh] items-center justify-center p-4">
+            <BrutalistCard
+                color="bg-white"
+                shadowSize="8px"
+                className="w-full max-w-md"
+            >
+                <h2 className="mb-10 text-center text-4xl font-black tracking-tighter uppercase italic text-black">
+                    CREATE{" "}
+                    <span className="bg-black px-2 text-white not-italic">
+                        ACCOUNT
+                    </span>
+                </h2>
 
                 {error && (
-                    <div className='mb-4 rounded bg-red-50 border border-red-200 p-3 text-sm text-red-700'>
-                        {error.data?.message || 'Registration failed. Try again.'}
+                    <div className="mb-8 border-2 border-black bg-[#fca5a5] p-3 text-[11px] font-black uppercase tracking-widest text-black">
+                        {error.data?.message || "Registration Failed"}
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className='space-y-4'>
-                    <div className="mb-6">
-                        <label className='block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2'>
-                            I am registering as:
+                <form onSubmit={handleSubmit} className="space-y-8">
+
+                    <div>
+                        <label className="mb-2 block text-[10px] font-black uppercase tracking-[0.2em] text-black">
+                            Registering As
                         </label>
                         <div className="flex gap-2">
-                            <button
-                                type="button"
-                                onClick={() => handleRoleChange('User')}
-                                className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-widest border-2 transition-all ${formData.role === 'User'
-                                        ? 'bg-black text-white border-black'
-                                        : 'bg-white text-black border-gray-200 hover:border-black'
-                                    }`}
-                            >
-                                Builder
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => handleRoleChange('Admin')}
-                                className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-widest border-2 transition-all ${formData.role === 'Admin'
-                                        ? 'bg-black text-white border-black'
-                                        : 'bg-white text-black border-gray-200 hover:border-black'
-                                    }`}
-                            >
-                                Organizer
-                            </button>
+                            {["User", "Admin"].map((role) => (
+                                <button
+                                    key={role}
+                                    type="button"
+                                    onClick={() => handleRoleChange(role)}
+                                    className={`
+                    shadow-[3px_3px_0px_0px]
+                    bg-yellow-400 text-black
+                    focus:bg-yellow-400 focus:text-black
+                    focus:shadow-none
+                focus:translate-x-[3px]
+                focus:translate-y-[3px]
+                transition-all
+                    flex-1 py-3 border-2 border-black
+                    text-[10px] font-black uppercase tracking-widest
+                    transition-all
+                    ${formData.role === role
+                                            ? "bg-yellow-400 text-black translate-x-[3px] translate-y-[3px] shadow-none"
+                                            : "bg-yellow-100 hover:bg-yellow-200"
+                                        }
+                  `}
+                                >
+                                    {role === "User" ? "Builder" : "Organizer"}
+                                </button>
+                            ))}
                         </div>
                     </div>
 
                     <div>
-                        <label className='block text-xs font-bold uppercase tracking-widest text-gray-700'>Full Name</label>
-                        <input type="text" name='name' value={formData.name} onChange={handleChange} required
-                            className='mt-1 w-full border-b-2 border-gray-200 px-0 py-2 focus:outline-none focus:border-black transition-colors'
-                            placeholder=""
+                        <label className="mb-2 block text-[10px] font-black uppercase tracking-[0.2em] text-black">
+                            Full Name
+                        </label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            className="
+                w-full bg-gray-50 p-3 font-bold
+                border-2 border-black
+                shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
+                focus:outline-none
+                focus:bg-gray-200
+                focus:shadow-none
+                focus:translate-x-[6px]
+                focus:translate-y-[6px]
+                transition-all
+              "
                         />
                     </div>
 
                     <div>
-                        <label className='block text-xs font-bold uppercase tracking-widest text-gray-700'>Email Address</label>
-                        <input type="email" name='email' value={formData.email} onChange={handleChange} required
-                            className='mt-1 w-full border-b-2 border-gray-200 px-0 py-2 focus:outline-none focus:border-black transition-colors'
-                            placeholder=""
+                        <label className="mb-2 block text-[10px] font-black uppercase tracking-[0.2em] text-black">
+                            Email Address
+                        </label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            className="
+                w-full bg-gray-50 p-3 font-bold
+                border-2 border-black
+                shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
+                focus:outline-none
+                focus:bg-gray-200
+                focus:shadow-none
+                focus:translate-x-[6px]
+                focus:translate-y-[6px]
+                transition-all
+              "
                         />
                     </div>
 
                     <div>
-                        <label className='block text-xs font-bold uppercase tracking-widest text-gray-700'>Password</label>
-                        <input type="password" name='password' value={formData.password} onChange={handleChange} required
-                            className='mt-1 w-full border-b-2 border-gray-200 px-0 py-2 focus:outline-none focus:border-black transition-colors'
-                            placeholder=""
+                        <label className="mb-2 block text-[10px] font-black uppercase tracking-[0.2em] text-black">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                            className="
+                w-full bg-gray-50 p-3 font-bold
+                border-2 border-black
+                shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
+                focus:outline-none
+                focus:bg-gray-200
+                focus:shadow-none
+                focus:translate-x-[6px]
+                focus:translate-y-[6px]
+                transition-all
+              "
                         />
                     </div>
 
                     <button
-                        type='submit'
+                        type="submit"
                         disabled={isLoading}
-                        className={`border-2 w-full mt-6 py-4 font-bold uppercase tracking-[0.2em] text-xs transition-all ${isLoading ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-black text-white hover:invert'
-                            }`}
+                        className={`
+              w-full py-4 font-black text-sm uppercase tracking-widest
+              border-2 border-black transition-all
+              ${isLoading
+                                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                : `
+                    bg-green-200 text-black
+                    shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
+                    hover:bg-green-300 hover:text-black
+                    active:shadow-none
+                    active:translate-x-[8px]
+                    active:translate-y-[8px]
+                  `
+                            }
+            `}
                     >
-                        {isLoading ? (
-                            <LoadingScreen message='PROCESSING...'/>
-                        ) : (
-                            'Create Account →'
-                        )}
+                        {isLoading ? "CREATING ACCOUNT..." : "CREATE ACCOUNT →"}
                     </button>
                 </form>
 
-                <p className='mt-8 text-center text-xs font-medium text-gray-500 uppercase tracking-widest'>
-                    Already have an account? <Link to='/login' className='text-black font-bold hover:underline ml-1'>Log in</Link>
-                </p>
-            </div>
+                <div className="mt-10 border-t-2 border-black pt-6 text-center">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-black">
+                        Already a member?
+                        <Link
+                            to="/login"
+                            className="ml-2 font-bold hover:underline transition-transform"
+                        >
+                            Login
+                        </Link>
+                    </p>
+                </div>
+            </BrutalistCard>
         </div>
     );
-}
+};
 
 export default RegisterPage;
