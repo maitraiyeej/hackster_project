@@ -40,7 +40,7 @@ const ExplorePage = () => {
         <div className="w-full min-h-screen bg-transparent p-10">
             <div className="max-w-7xl mx-auto">
                 <header className="mb-12 border-b-2 border-black pb-6">
-                    <h1 className="text-6xl font-black uppercase tracking-tighter">Global Feed</h1>
+                    <h1 className="text-6xl font-black uppercase tracking-tighter italic">Global Feed</h1>
                     <p className="text-xs font-bold uppercase tracking-[0.3em] text-gray-400 mt-2">Discover every active event on HackSter</p>
 
                     <div className="mt-8">
@@ -49,7 +49,14 @@ const ExplorePage = () => {
                             placeholder="SEARCH BY NAME, TECH, OR DESCRIPTION..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full border-2 border-black p-4 text-[10px] font-bold uppercase tracking-[0.2em] focus:bg-black focus:text-white transition-all outline-none"
+                            className="shadow-[4px_4px_0px_0px] 
+                                        focus:outline-none
+                                        focus:bg-gray-200
+                                        focus:shadow-none
+                                        focus:translate-x-[4px]
+                                        focus:translate-y-[4px]
+                                        transition-all 
+                                        w-full border-2 border-black p-4 text-[10px] font-bold uppercase tracking-[0.2em] focus:bg-black focus:text-black transition-all outline-none"
                         />
                     </div>
                 </header>

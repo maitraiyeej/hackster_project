@@ -36,7 +36,7 @@ const Navbar = () => {
       title: "Explore",
       icon: <IconSearch className="h-full w-full text-black" />,
       href: "/explore",
-      color: "#91E1F2"
+      color: "#D1D5DB"
     },
     ...(isAdmin ? [{
       title: "Create Event",
@@ -49,7 +49,7 @@ const Navbar = () => {
         title: `Profile`,
         icon: <IconUser className="h-full w-full text-black" />,
         href: `/user/${user._id}`,
-        color: '#D1D5DB'
+        color: '#91E1F2'
       },
       {
         title: "Logout",
@@ -63,14 +63,14 @@ const Navbar = () => {
         title: "Login",
         icon: <IconLogin className="h-full w-full text-black" />,
         href: "/login",
-        color: '#D1D5DB'
+        color: '#91E1F2'
 
       },
       {
         title: "Register",
         icon: <IconUserPlus className="h-full w-full text-black" />,
         href: "/register",
-        color: '#D1D5DB'
+        color: '#BEF264'
 
         
       }

@@ -65,24 +65,20 @@ const RegisterPage = () => {
                                     type="button"
                                     onClick={() => handleRoleChange(role)}
                                     className={`
-                    shadow-[3px_3px_0px_0px]
-                    bg-yellow-400 text-black
-                    focus:bg-yellow-400 focus:text-black
-                    focus:shadow-none
-                focus:translate-x-[3px]
-                focus:translate-y-[3px]
-                transition-all
-                    flex-1 py-3 border-2 border-black
-                    text-[10px] font-black uppercase tracking-widest
-                    transition-all
-                    ${formData.role === role
+                                        shadow-[3px_3px_0px_0px]
+                                        border-2 border-black
+                                        flex-1 py-3
+                                        text-[10px] font-black uppercase tracking-widest
+                                        transition-all
+                                        ${formData.role === role
                                             ? "bg-yellow-400 text-black translate-x-[3px] translate-y-[3px] shadow-none"
-                                            : "bg-yellow-100 hover:bg-yellow-200"
+                                            : "bg-yellow-100 text-black hover:bg-yellow-200"
                                         }
-                  `}
+  `}
                                 >
                                     {role === "User" ? "Builder" : "Organizer"}
                                 </button>
+
                             ))}
                         </div>
                     </div>
@@ -183,11 +179,11 @@ const RegisterPage = () => {
                 </form>
 
                 <div className="mt-10 border-t-2 border-black pt-6 text-center">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-black">
+                    <p className="text-[10px] font-semibold font-black uppercase tracking-widest text-black">
                         Already a member?
                         <Link
                             to="/login"
-                            className="ml-2 font-bold hover:underline transition-transform"
+                            className="ml-2 font-bold hover:underline cursor-pointer transition-transform"
                         >
                             Login
                         </Link>
