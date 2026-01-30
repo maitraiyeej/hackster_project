@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import LoadingScreen from './LoadingScreen';
 import { useSelector } from 'react-redux';
+import BrutalistCard from '@/components/ui/BrutalistCard';
 
 const HackathonDetails = () => {
     const [teams, setTeams] = useState([]);
@@ -10,7 +11,7 @@ const HackathonDetails = () => {
     const navigate = useNavigate();
     const [hackathon, setHackathon] = useState(null);
     const [loading, setLoading] = useState(true);
-    
+
     // Get user from Redux store
     const { user } = useSelector((state) => state.auth);
 
@@ -95,17 +96,26 @@ const HackathonDetails = () => {
     return (
         <div className='w-full min-h-screen bg-transparent'>
             <div className="max-w-5xl mx-auto p-10">
-                <span className="text-xs font-bold uppercase tracking-widest bg-black text-white px-2 py-1">
+                <div className="inline-block
+                        text-xs font-bold border-2 border-black uppercase tracking-widest
+                        bg-yellow-200
+                        shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
+                        hover:shadow-none
+                        hover:translate-x-[2px]
+                        hover:translate-y-[2px]
+                        transition-all
+                        px-2 py-1
+                ">
                     {hackathon.location || 'Remote'}
-                </span>
+                </div>
+ 
+                <h1 className='text-5xl font-bold italic tracking-tighter mt-4'>{hackathon.name}</h1>
+                <p className='text-xl text-gray-500 font-semibold mt-2'>{hackathon.organization}</p>
 
-                <h1 className='text-6xl font-bold tracking-tighter mt-4'>{hackathon.name}</h1>
-                <p className='text-xl text-gray-500 font-light mt-2'>{hackathon.organization}</p>
-
-                <div className='mt-12 grid grid-cols-1 md:grid-cols-3 gap-10'>
+                <div className='mt-8 grid grid-cols-1 md:grid-cols-3 gap-10'>
                     <div className='md:col-span-2'>
-                        <h3 className='text-sm uppercase tracking-widest font-bold border-b border-black pb-2 mb-4'>About</h3>
-                        <p className='text-gray-700 leading-relaxed text-lg'>{hackathon.description}</p>
+                        <h3 className='text-sm uppercase tracking-widest font-bold border-b border-black pb-2 mb-2'>About</h3>
+                        <p className='text-gray-700 leading-relaxed text-[15px]'>{hackathon.description}</p>
                     </div>
 
                     <div>
@@ -113,7 +123,7 @@ const HackathonDetails = () => {
                         <div className="flex flex-wrap gap-2">
                             {hackathon.techStacks?.length > 0 ? (
                                 hackathon.techStacks.map((tech, index) => (
-                                    <span key={index} className="border border-black px-2 py-1 text-[10px] font-bold uppercase">
+                                    <span key={index} className="border-2 bg-yellow-100 border-black px-2 py-1 text-[10px] font-semibold shadow-[2px_2px_0px_0px] hover:shadow-none hover:translate-x-[2px] shadow:translate-y-[2px] transition-all uppercase">
                                         {tech}
                                     </span>
                                 ))
@@ -124,27 +134,27 @@ const HackathonDetails = () => {
                     </div>
                 </div>
 
-                <hr className="my-16 border-black" />
+                <hr className="my-10 border-black" />
 
                 <div className='flex flex-col md:flex-row justify-between items-start md:items-end gap-4'>
                     <div>
-                        <h2 className='text-4xl font-bold tracking-tighter'>Recruiting Teams</h2>
+                        <h2 className='text-3xl font-bold tracking-tighter italic'>Recruiting Teams</h2>
                         <p className='text-gray-500 uppercase text-xs tracking-widest mt-2'>Find your collaborators</p>
                     </div>
-                    
+
                     <div className="flex gap-3">
                         {/* ADMIN BUTTON: Only visible to Admins */}
                         {user?.role === 'Admin' && (
                             <button
                                 onClick={() => navigate(`/my-events`)}
-                                className="border-2 border-black bg-white text-black px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-black hover:text-white transition-all whitespace-nowrap"
+                                className="border-2 border-black bg-white text-black px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] shadow-[4px_4px_0px_0px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] bg-blue-200 hover:bg-blue-300 transition-all whitespace-nowrap"
                             >
                                 Admin: All Events
                             </button>
                         )}
                         <button
                             onClick={handleCreateTeam}
-                            className="border-2 border-black bg-black text-white px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-black transition-all whitespace-nowrap"
+                            className="border-2 border-black bg-green-200 hover:bg-green-300 shadow-[4px_4px_0px_0px] px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all whitespace-nowrap"
                         >
                             Create a Team +
                         </button>
@@ -161,12 +171,12 @@ const HackathonDetails = () => {
                             const isPending = team.requests?.some(r => (r._id || r) === user?._id);
 
                             return (
-                                <div key={team._id} className="border border-black p-6 hover:shadow-lg transition-all bg-white flex flex-col min-h-[320px]">
+                                <div key={team._id} className="border-2 border-black p-5 bg-white flex flex-col h-full shadow-[4px_4px_0px_0px] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all">
                                     <div className="flex justify-between items-start mb-4">
                                         <h3 className="text-2xl font-bold tracking-tighter uppercase italic break-all pr-2">{team.name}</h3>
 
                                         <div className="flex flex-col gap-2 items-end shrink-0">
-                                            <span className={`text-[9px] font-black uppercase tracking-tighter px-2 py-0.5 border ${getStatusStyles(team.status)}`}>
+                                            <span className={`text-[10px] border shadow-[1px_1px_0px_0px] font-black uppercase tracking-tighter px-2 py-0.5 border ${getStatusStyles(team.status)}`}>
                                                 {team.status}
                                             </span>
                                             <span className="text-[10px] font-bold bg-gray-100 px-2 py-1 whitespace-nowrap">
@@ -196,7 +206,7 @@ const HackathonDetails = () => {
 
                                     <div className="flex flex-wrap gap-2 mb-6">
                                         {team.needs?.map((need, idx) => (
-                                            <span key={idx} className="text-[9px] font-bold uppercase border border-black px-2 py-1">
+                                            <span key={idx} className="text-[9px] bg-white text-black border-2 border-black bg-yellow-100 shadow-[2px_2px_0px_0px] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all font-bold uppercase px-2 py-1">
                                                 {need.role}
                                             </span>
                                         ))}
@@ -206,12 +216,12 @@ const HackathonDetails = () => {
                                         {isMember ? (
                                             <div className="flex flex-col gap-2">
                                                 <span className="text-center text-[10px] font-bold text-green-600 uppercase tracking-widest mb-1">
-                                                    ✓ YOU_ARE_A_MEMBER
+                                                    YOU ARE A MEMBER
                                                 </span>
-                                                
+
                                                 <button
                                                     onClick={() => navigate(`/hackathon/${id}/my-team`)}
-                                                    className="w-full border-2 bg-yellow-400 text-black border-black py-3 text-xs font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none"
+                                                    className="w-full border-2 bg-purple-200 text-black border-black py-3 text-xs font-black uppercase tracking-widest hover:bg-purple-300 active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none"
                                                 >
                                                     View Team Dashboard →
                                                 </button>
@@ -219,12 +229,12 @@ const HackathonDetails = () => {
                                                 {isCaptain && (
                                                     <button
                                                         onClick={() => navigate(`/manage-team/${team._id}`)}
-                                                        className="w-full border-2 bg-black text-white border-black py-3 text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all"
+                                                        className="w-full bg-gray-200 hover:bg-gray-300 border-2 border-black py-3 text-xs font-bold uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all  transition-all"
                                                     >
                                                         Manage Team Settings (Admin)
                                                     </button>
                                                 )}
-                                                
+
                                                 {!isCaptain && (
                                                     <button
                                                         disabled={isSubmitted}
@@ -244,10 +254,10 @@ const HackathonDetails = () => {
                                                 onClick={() => handleRequestJoin(team._id)}
                                                 className={`border-2 border-solid w-full py-3 text-xs font-bold uppercase tracking-widest transition-all ${(isFull || isSubmitted || isPending)
                                                     ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-                                                    : 'bg-black text-white hover:invert'
+                                                    : 'bg-green-200 text-black hover:bg-green-300 border-2 border-black shadow-[4px_4px_0px_0px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px]'
                                                     }`}
                                             >
-                                                {isSubmitted ? 'SUBMISSION_CLOSED' : isFull ? 'TEAM_FULL' : isPending ? 'REQUEST_PENDING' : 'Request to Join →'}
+                                                {isSubmitted ? 'SUBMISSION_CLOSED' : isFull ? 'TEAM_FULL' : isPending ? 'REQUEST PENDING' : 'Request to Join →'}
                                             </button>
                                         )}
                                     </div>
