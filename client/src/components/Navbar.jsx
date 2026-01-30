@@ -28,35 +28,35 @@ const Navbar = () => {
   const links = [
     {
       title: "Home",
-      icon: <IconHome className="h-full w-full text-black" />,
+      icon: <IconHome className="h-full w-full text-white" />,
       href: "/",
-      color: '#FFFFFF'
+      color: '#314158'
     },
     {
       title: "Explore",
-      icon: <IconSearch className="h-full w-full text-black" />,
+      icon: <IconSearch className="h-full w-full text-white" />,
       href: "/explore",
-      color: "#D1D5DB"
+      color: "#62748e"
     },
     ...(isAdmin ? [{
       title: "Create Event",
       icon: <IconPlus className="h-full w-full text-black" />,
       href: "/admin",
-      color: '#BEF264'
+      color: '#b9f8cf'
     }] : []),
     ...(user ? [
       {
         title: `Profile`,
         icon: <IconUser className="h-full w-full text-black" />,
         href: `/user/${user._id}`,
-        color: '#91E1F2'
+        color: '#BBDEFB'
       },
       {
         title: "Logout",
         icon: <IconLogout className="h-full w-full text-black" />,
         onClick: handleLogout, 
         href: "#", 
-        color: "#fca5a5",
+        color: "#ffa1ad",
       }
     ] : [
       {
@@ -81,7 +81,7 @@ const Navbar = () => {
     <>
       <div className="fixed top-0 left-0 w-full h-20 flex justify-between items-center px-10 z-50 pointer-events-none">
         <Link to="/" className="text-3xl font-black tracking-tighter uppercase italic group pointer-events-auto">
-            HACK<span className="bg-black text-white px-1 not-italic group-hover:bg-[#BEF264] group-hover:text-black transition-colors">STER</span>
+            HACK<span className="bg-black text-white px-1 not-italic transition-colors">STER</span>
         </Link>
       </div>
 

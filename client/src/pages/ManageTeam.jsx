@@ -137,14 +137,14 @@ const ManageTeam = () => {
     }
     return (
         <div className="max-w-4xl mx-auto p-10 bg-transparent min-h-screen">
-            <button onClick={() => navigate(-1)} className="text-xs font-bold uppercase mb-8 hover:underline">← Back</button>
+            <button onClick={() => navigate(-1)} className="text-xs border border-black shadow-[2px_2px_0px_0px] py-0.5 px-2 bg-white active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all font-bold uppercase mb-8">← Back</button>
 
             {isEditing ? (
                 <form onSubmit={handleUpdateTeam} className="mb-12 space-y-4 border-2 border-black p-6">
                     <div>
                         <label className="text-[10px] font-bold uppercase tracking-widest block mb-1">Team Name</label>
                         <input
-                            className="text-4xl font-bold uppercase border-b-2 border-black w-full outline-none"
+                            className="text-3xl border-2 border-black shadow-[4px_4px_0px_0px] focus:bg-gray-200 focus:shadow-none focus:translate-x-[4px] focus:translate-y-[4px] transition-all font-bold uppercase border-b-2 border-black w-full outline-none"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         />
@@ -152,7 +152,7 @@ const ManageTeam = () => {
                     <div>
                         <label className="text-[10px] font-bold uppercase tracking-widest block mb-1">Roles Needed (Comma Separated)</label>
                         <input
-                            className="w-full border border-black p-2 text-sm font-mono outline-none"
+                            className="border-2 border-black shadow-[4px_4px_0px_0px] focus:bg-gray-200 focus:shadow-none focus:translate-x-[4px] focus:translate-y-[4px] transition-all w-full border border-black p-2 text-sm font-mono outline-none"
                             placeholder="e.g. Frontend, Designer, Backend"
                             value={formData.needs}
                             onChange={(e) => setFormData({ ...formData, needs: e.target.value })}
@@ -161,15 +161,15 @@ const ManageTeam = () => {
                     <div>
                         <label className="text-[10px] font-bold uppercase tracking-widest block mb-1">Project Idea</label>
                         <textarea
-                            className="w-full border border-black p-4 text-sm font-mono outline-none"
+                            className="border-2 border-black shadow-[4px_4px_0px_0px] focus:bg-gray-200 focus:shadow-none focus:translate-x-[4px] focus:translate-y-[4px] transition-all w-full border border-black p-4 text-sm font-mono outline-none"
                             value={formData.projectIdea}
                             rows="4"
                             onChange={(e) => setFormData({ ...formData, projectIdea: e.target.value })}
                         />
                     </div>
                     <div className="flex gap-2">
-                        <button type="submit" className="bg-black text-white px-4 py-2 text-xs font-bold uppercase hover:invert">Save Changes</button>
-                        <button type="button" onClick={() => setIsEditing(false)} className="border border-black px-4 py-2 text-xs font-bold uppercase">Cancel</button>
+                        <button type="submit" className="bg-blue-200 hover:bg-blue-300 text-black border-2 border-black shadow-[4px_4px_0px_0px] px-4 py-2 text-xs font-bold uppercase active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all">Save Changes</button>
+                        <button type="button" onClick={() => setIsEditing(false)} className="bg-red-100 hover:bg-red-200 border-2 border-black shadow-[4px_4px_0px_0px] px-4 py-2 text-xs font-bold uppercase active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all">Cancel</button>
                     </div>
                 </form>
             ) : (
@@ -181,14 +181,14 @@ const ManageTeam = () => {
                         </div>
                         <button
                             onClick={() => setIsEditing(true)}
-                            className="text-[10px] font-bold border border-black px-3 py-1 uppercase hover:bg-black hover:text-white transition"
+                            className="text-[10px] bg-green-100 hover:bg-green-200 font-bold border-2 border-black shadow-[2px_2px_0px_0px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] px-3 py-1 uppercase transition-all"
                         >
                             Edit Profile
                         </button>
                     </div>
                     <div className="mt-4 flex flex-wrap gap-2">
                         {team?.needs?.map((n, index) => (
-                            <span key={index} className="text-[10px] font-bold border border-black px-2 py-0.5 uppercase bg-gray-100">
+                            <span key={index} className="text-[10px] bg-yellow-100 font-bold border-2 border-black shadow-[2px_2px_0px_0px] hover:shadow-none transition-all hover:translate-x-[2px] hover:translate-y-[2px] px-2 py-0.5 uppercase bg-gray-100">
                                 {n.role}
                             </span>
                         ))}
@@ -241,7 +241,7 @@ const ManageTeam = () => {
                 <h2 className="text-xl font-bold uppercase mb-6">Current Roster ({team?.members?.length}/{team?.teamSize})</h2>
                 <div className="grid gap-4">
                     {team?.members?.map((member) => (
-                        <div key={member._id} className="border border-black p-4 flex justify-between items-center">
+                        <div key={member._id} className="bg-white border-2 border-black shadow-[4px_4px_0px_0px] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all p-4 flex justify-between items-center">
                             <div>
                                 <Link to={`/user/${member._id}`} className="font-bold uppercase text-sm hover:underline hover:text-blue-700 block">
                                     {member.name}
@@ -253,7 +253,7 @@ const ManageTeam = () => {
                             ) : (
                                 <button
                                     onClick={() => handleRemoveMember(member._id)}
-                                    className="text-[10px] font-bold text-red-600 uppercase border border-red-600 px-2 py-1 hover:bg-red-600 hover:text-white transition cursor-pointer"
+                                    className="text-[10px] font-bold text-black bg-red-100 uppercase border-2 border-black px-2 py-1 hover:bg-red-300 shadow-[2px_2px_0px_0px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
                                 >
                                     Remove
                                 </button>
@@ -262,11 +262,11 @@ const ManageTeam = () => {
                     ))}
                 </div>
 
-                <div className="mt-20 border-t border-red-200 pt-10">
-                    <h3 className="text-red-600 font-bold uppercase text-xs tracking-widest mb-4">Danger Zone</h3>
+                <div className="mt-10 border-t border-red-200 pt-5">
+                    <h3 className="text-red-600 font-bold uppercase text-xs tracking-widest mb-2">Danger Zone</h3>
                     <button
                         onClick={handleDeleteTeam}
-                        className="bg-white text-red-600 border border-red-600 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all"
+                        className="bg-red-100 hover:bg-red-300 text-black border-2 border-black shadow-[4px_4px_0px_0px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all"
                     >
                         Delete Team Permanently
                     </button>

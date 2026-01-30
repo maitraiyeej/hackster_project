@@ -5,6 +5,7 @@ import axios from 'axios';
 import LoadingScreen from './LoadingScreen';
 import BrutalistButton from '@/components/ui/BrutalistButton';
 import BrutalistCard from '@/components/ui/BrutalistCard';
+import Footer from '@/components/Footer';
 
 const HomePage = ({ user }) => {
   const [myEventsCount, setMyEventsCount] = useState(0);
@@ -65,7 +66,7 @@ const HomePage = ({ user }) => {
 
           <div className="max-w-md">
             <div className="border-l-8 border-black pl-8 py-4">
-              <p className="text-lg font-black uppercase leading-tight tracking-tighter mb-4">
+              <p className="text-lg font-black uppercase leading-tight tracking-tighter mb-3">
                 {isAdmin
                   ? "TOTAL CONTROL CENTER V.01"
                   : "JOIN THE RESISTANCE OF BUILDERS"}
@@ -86,7 +87,7 @@ const HomePage = ({ user }) => {
           {isAdmin ? (
             <BrutalistButton
               onClick={() => navigate('/explore')}
-              color="bg-[#FFD1A0]"
+              color="bg-[#F1E4C3]"
               className="w-full h-14 text-[10px] tracking-[0.2em] flex justify-between items-center px-4"
               shadowSize="4px"
             >
@@ -117,7 +118,7 @@ const HomePage = ({ user }) => {
           {isAdmin ? (
             <BrutalistButton
               onClick={() => navigate('/admin')}
-              color="bg-[#BEF264]"
+              color="bg-[#C6A969]"
               className="text-[10px] tracking-[0.2em] flex justify-between items-center w-full h-14 px-4"
               shadowSize="4px"
             >
@@ -138,12 +139,12 @@ const HomePage = ({ user }) => {
         <div className="p-8 flex items-center justify-center">
           <BrutalistButton
             onClick={() => navigate(isAdmin ? '/my-events' : '/explore')}
-            color='bg-[#91E1F2]'
+            color='bg-[#597E52]'
             shadowSize='4px'
             className="text-[10px] tracking-[0.2em] flex justify-between items-center w-full h-14 px-4"
           >
-            <span className="font-black italic">{isAdmin ? "YOUR EVENTS" : "FIND HACKATHONS"}</span>
-            <span className='text-xl'>→</span>
+            <span className="font-black text-white italic">{isAdmin ? "YOUR EVENTS" : "FIND HACKATHONS"}</span>
+            <span className='text-xl text-white'>→</span>
           </BrutalistButton>
         </div>
       </section>
@@ -167,7 +168,7 @@ const HomePage = ({ user }) => {
                   className="hover:cursor-pointer"
                 >
                   <div className="flex justify-between items-start mb-4">
-                    <span className="text-[10px] font-black border-2 border-black px-2 py-1 uppercase bg-[#BEF264] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                    <span className="text-[10px] font-bold hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all font-black border-2 border-black px-2 py-1 uppercase bg-[#BEF264] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                       {hack.location || 'Remote'}
                     </span>
                     <span className="text-xl font-light group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-200">
@@ -192,7 +193,10 @@ const HomePage = ({ user }) => {
           </div>
         </section>
       </div>
+    
+    <Footer/>
     </div>
+    
   );
 };
 

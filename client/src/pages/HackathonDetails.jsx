@@ -239,9 +239,9 @@ const HackathonDetails = () => {
                                                     <button
                                                         disabled={isSubmitted}
                                                         onClick={() => handleLeaveTeam(team._id)}
-                                                        className={`border-2 border-red-600 w-full py-3 text-xs font-bold uppercase tracking-widest transition-all shadow-[4px_4px_0px_0px_rgba(220,38,38,1)] ${isSubmitted
+                                                        className={`border-2 border-black w-full py-3 text-xs font-bold uppercase tracking-widest transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${isSubmitted
                                                             ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-                                                            : 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white'
+                                                            : 'bg-red-200 text-black border border-black hover:bg-red-300 active:shadow-none active:translate-x-[4px] active:translate-y-[4px]'
                                                             }`}
                                                     >
                                                         {isSubmitted ? 'LOCKED_BY_SUBMISSION' : 'Leave Team ×'}

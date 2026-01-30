@@ -136,7 +136,7 @@ transition-all px-3 py-1 border-2 border-black font-bold">
                             {user._id !== (team?.captain?._id || team?.captain) && (
                                 <button
                                     onClick={handleLeaveTeam}
-                                    className="shadow-[4px_4px_0px_0px_rgba(220,38,38,1)] font-mono text-sm font-bold bg-red-100 text-red-600 px-3 py-1 border-2 border-red-600 hover:bg-red-600 hover:text-white uppercase hover:bg-black transition-colors"
+                                    className="shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-mono text-sm font-bold bg-red-200 px-3 py-1 border-2 border-black hover:bg-red-300 uppercase active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all"
                                 >
                                     Leave Team
                                 </button>

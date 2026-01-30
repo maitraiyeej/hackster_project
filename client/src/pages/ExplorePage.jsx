@@ -77,7 +77,7 @@ const ExplorePage = () => {
                                     className="hover:cursor-pointer"
                                 >
                                     <div className="flex justify-between items-start mb-4">
-                                        <span className="text-[10px] font-black border-2 border-black px-2 py-1 uppercase bg-[#BEF264] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                                        <span className="text-[10px] font-bold hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all font-black border-2 border-black px-2 py-1 uppercase bg-[#BEF264] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                                             {h.location || "Remote"}
                                         </span>
                                         <span className="text-xl font-light group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-200">
@@ -98,7 +98,7 @@ const ExplorePage = () => {
                                             {h.techStacks.map((tech) => (
                                                 <span
                                                     key={tech}
-                                                    className="text-[9px] font-black uppercase border-2 border-black px-2 py-0.5 bg-gray-100"
+                                                    className="text-[9px] shadow-[2px_2px_0px_0px] bg-yellow-200 hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all   font-black uppercase border-2 border-black px-2 py-0.5 bg-gray-100"
                                                 >
                                                     {tech}
                                                 </span>

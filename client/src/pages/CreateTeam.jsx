@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import BrutalistCard from '@/components/ui/BrutalistCard';
 
 const CreateTeam = () => {
     const { id } = useParams();
@@ -58,14 +59,14 @@ const CreateTeam = () => {
         }
     };
     return (
-        <div className="max-w-2xl mx-auto p-10 bg-white min-h-screen">
-            <h2 className="text-4xl font-bold tracking-tighter mb-8 italic">START_A_TEAM</h2>
+        <BrutalistCard className="max-w-xl mx-auto bg-white ">
+            <h2 className="text-3xl font-black tracking-tighter mb-8 italic uppercase">Create your own Team</h2>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-8">
                 <div>
                     <label className="text-xs font-bold uppercase tracking-widest block mb-2 text-gray-400">Team Name</label>
                     <input
-                        className="w-full border-b border-black py-2 outline-none focus:border-blue-500 bg-transparent text-xl font-medium"
+                        className="border-2 border-black shadow-[4px_4px_0px_0px] w-full py-2 bg-white focus:bg-gray-200 focus:shadow-none focus:translate-x-[4px] focus:translate-y-[4px] transition-all text-xl font-medium"
                         type="text"
                         required
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -75,9 +76,8 @@ const CreateTeam = () => {
                 <div>
                     <label className="text-xs font-bold uppercase tracking-widest block mb-2 text-gray-400">Project Idea</label>
                     <textarea
-                        className="w-full border border-black p-4 h-32 outline-none focus:bg-gray-50 text-lg"
+                        className="border-2 border-black shadow-[4px_4px_0px_0px] w-full  p-4 h-32 bg-white focus:bg-gray-200 focus:shadow-none focus:translate-x-[4px] focus:translate-y-[4px] transition-all text-lg"
                         required
-                        placeholder="Describe your vision..."
                         onChange={(e) => setFormData({ ...formData, projectIdea: e.target.value })}
                     />
                 </div>
@@ -86,9 +86,8 @@ const CreateTeam = () => {
                     <div>
                         <label className="text-xs font-bold uppercase tracking-widest block mb-2 text-gray-400">Looking For (Comma separated)</label>
                         <input
-                            className="w-full border-b border-black py-2 outline-none bg-transparent"
+                            className="border-2 border-black shadow-[4px_4px_0px_0px] w-full py-2 outline-none bg-white focus:bg-gray-200 focus:shadow-none focus:translate-x-[4px] focus:translate-y-[4px] transition-all"
                             type="text"
-                            placeholder="React, Node, Designer"
                             required
                             onChange={(e) => setFormData({ ...formData, needs: e.target.value })}
                         />
@@ -96,7 +95,7 @@ const CreateTeam = () => {
                     <div>
                         <label className="text-xs font-bold uppercase tracking-widest block mb-2 text-gray-400">Total Team Size</label>
                         <select
-                            className="w-full border-b border-black py-2 outline-none bg-transparent cursor-pointer font-medium text-lg"
+                            className="w-full border-2 border-black shadow-[4px_4px_0px_0px] py-2 outline-none bg-transparent cursor-pointer font-medium text-lg"
                             value={formData.teamSize}
                             onChange={(e) => setFormData({ ...formData, teamSize: e.target.value })}
                         >
@@ -111,12 +110,12 @@ const CreateTeam = () => {
 
                 <button
                     disabled={loading}
-                    className="bg-black text-white py-5 font-bold uppercase tracking-[0.2em] text-sm hover:invert transition-all border-2 border-solid disabled:opacity-50"
+                    className="bg-green-100 border-2 border-black shadow-[4px_4px_0px_0px] py-4 font-bold uppercase tracking-[0.2em] text-sm hover:bg-green-200 active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all disabled:opacity-50"
                 >
-                    {loading ? 'PUBLISHING...' : 'POST RECRUITMENT ↗'}
+                    {loading ? 'PUBLISHING...' : 'POST RECRUITMENT'}
                 </button>
             </form>
-        </div>
+        </BrutalistCard>
     );
 };
 
