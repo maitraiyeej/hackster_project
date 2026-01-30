@@ -9,7 +9,7 @@ const socket = io('http://localhost:5000');
 
 const ViewTeam = () => {
     const { id } = useParams();
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const [team, setTeam] = useState(null);
     const [loading, setLoading] = useState(true);
     const { user } = useSelector((state) => state.auth);
@@ -114,16 +114,22 @@ const ViewTeam = () => {
     );
 
     return (
-        <div className="max-w-[1400px] mx-auto p-4 md:p-8 animate-in fade-in duration-700">
-            <div className="border-4 border-black p-6 md:p-8 bg-white shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] mb-10">
+        <div className="max-w-[1200px] mx-auto p-4 md:p-8 animate-in fade-in duration-700">
+            <div className="border-2 border-black p-6 md:p-8 bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none
+hover:translate-x-[6px]
+hover:translate-y-[6px]
+transition-all mb-10">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div className="flex-1">
                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 block mb-1">Team Dashboard</span>
-                        <h1 className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter leading-none break-words">
+                        <h1 className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter leading-none break-words">
                             {team?.name || "UNKNOWN_TEAM"}
                         </h1>
                         <div className="mt-4 flex flex-wrap gap-3 items-center">
-                            <p className="font-mono text-sm bg-yellow-300 inline-block px-3 py-1 border-2 border-black font-bold">
+                            <p className="font-mono text-sm bg-yellow-300 inline-block shadow-[2px_2px_0px_0px] hover:shadow-none
+hover:translate-x-[2px]
+hover:translate-y-[2px]
+transition-all px-3 py-1 border-2 border-black font-bold">
                                 {team?.hackathon?.name || "HACKATHON_PROJECT"}
                             </p>
 
@@ -137,9 +143,12 @@ const ViewTeam = () => {
                             )}
                         </div>
                     </div>
-                    <div className="border-4 border-black p-4 bg-black text-white font-black uppercase italic min-w-[140px] text-center shadow-[5px_5px_0px_0px_rgba(34,211,238,1)]">
+                    <div className="border-2 border-black p-2 font-black uppercase italic text-center shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none
+hover:translate-x-[3px]
+hover:translate-y-[3px]
+transition-all">
                         <p className="text-[10px] tracking-widest opacity-70">Capacity</p>
-                        <p className="text-3xl">{team?.members?.length || 0} / {team?.teamSize || 0}</p>
+                        <p className="text-xl">{team?.members?.length || 0} / {team?.teamSize || 0}</p>
                     </div>
                 </div>
             </div>
@@ -147,15 +156,21 @@ const ViewTeam = () => {
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
 
                 <div className="lg:col-span-3 space-y-10">
-                    <div className="border-4 border-black p-6 bg-white shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
-                        <h3 className="text-2xl font-black uppercase border-b-4 border-black pb-2 mb-6 italic tracking-tighter">Team Description</h3>
-                        <p className="font-mono text-lg leading-relaxed text-gray-800">
+                    <div className="border-2 border-black p-6 bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none
+hover:translate-x-[6px]
+hover:translate-y-[6px]
+transition-all relative overflow-hidden">
+                        <h3 className="text-2xl font-black uppercase border-b-2 border-black pb-2 mb-6 italic tracking-tighter">Team Description</h3>
+                        <p className="font-mono text-[15px] leading-relaxed text-gray-800">
                             {team?.projectIdea || "NO_MISSION_DEFINED_YET"}
                         </p>
                     </div>
 
-                    <div className="border-4 border-black p-6 bg-white shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
-                        <h3 className="text-2xl font-black uppercase border-b-4 border-black pb-2 mb-6 italic tracking-tighter">Verified Roster</h3>
+                    <div className="border-2 border-black p-6 bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none
+hover:translate-x-[6px]
+hover:translate-y-[6px]
+transition-all">
+                        <h3 className="text-2xl font-black uppercase border-b-2 border-black pb-2 mb-6 italic tracking-tighter">Verified Roster</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {team?.members?.map((member) => (
                                 <Link
@@ -177,9 +192,9 @@ const ViewTeam = () => {
                 </div>
 
                 <div className="lg:col-span-2">
-                    <div className="border-4 border-black p-6 bg-black text-white shadow-[12px_12px_0px_0px_rgba(255,255,0,1)] sticky top-8">
+                    <div className="border-2 border-black p-6 bg-black text-white sticky top-8">
                         <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-2xl font-black uppercase tracking-tighter italic">Comms_Center</h3>
+                            <h3 className="text-xl font-black uppercase tracking-tighter italic">Team Discussion</h3>
                             <div className="flex gap-1">
                                 <div className={`w-2 h-2 rounded-full ${chatInitialized ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
                                 <div className="w-2 h-2 rounded-full bg-gray-600"></div>
