@@ -68,7 +68,7 @@ const UserProfile = () => {
             <div className="flex justify-between items-center mb-10">
                 <button 
                     onClick={() => navigate('/')} 
-                    className="border-2 border-black bg-white px-4 py-1 text-[10px] font-black uppercase tracking-widest shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+                    className="border-2 border-black bg-white px-4 py-1 text-[10px] font-black uppercase tracking-widest shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all"
                 >
                     ← RETURN TO BASE
                 </button>
@@ -76,7 +76,7 @@ const UserProfile = () => {
                 {isOwner && !isEditing && (
                     <button 
                         onClick={() => setIsEditing(true)}
-                        className="bg-green-100 border-2 border-black px-6 py-2 text-[10px] font-black uppercase tracking-widest shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-green-200  active:shadow-none
+                        className="bg-green-100 border-2 border-black px-6 py-2 text-[10px] font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-green-200  active:shadow-none
                     active:translate-x-[4px]
                     active:translate-y-[4px] transition-all"
                     >
