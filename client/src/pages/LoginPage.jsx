@@ -4,6 +4,7 @@ import { useLoginMutation } from "../services/authApi";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../features/auth/authSlice";
 import BrutalistCard from "@/components/ui/BrutalistCard";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
     const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const LoginPage = () => {
             const userData = await login(formData).unwrap();
             dispatch(setCredentials(userData));
             navigate("/");
+            toast.success(`Welcome back, ${userData.name}!`);
         } catch (err) {
             console.error("Login failed:", err);
         }

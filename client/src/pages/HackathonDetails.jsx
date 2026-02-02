@@ -147,7 +147,7 @@ const HackathonDetails = () => {
                         {user?.role === 'Admin' && (
                             <button
                                 onClick={() => navigate(`/my-events`)}
-                                className="border-2 border-black bg-white text-black px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] shadow-[4px_4px_0px_0px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] bg-blue-200 hover:bg-blue-300 transition-all whitespace-nowrap"
+                                className="border-2 bg-blue-100 border-black text-black px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] shadow-[4px_4px_0px_0px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] bg-blue-200 hover:bg-blue-300 transition-all whitespace-nowrap"
                             >
                                 Admin: All Events
                             </button>
