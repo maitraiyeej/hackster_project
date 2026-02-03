@@ -4,6 +4,7 @@ import axios from 'axios';
 import LoadingScreen from './LoadingScreen';
 import { useSelector } from 'react-redux';
 import BrutalistCard from '@/components/ui/BrutalistCard';
+import { showToast } from '@/components/SystemToast';
 
 const HackathonDetails = () => {
     const [teams, setTeams] = useState([]);
@@ -35,7 +36,10 @@ const HackathonDetails = () => {
 
     const handleCreateTeam = () => {
         if (!user) {
-            alert("Please login to create a team!");
+            showToast({
+                message: "Please login to create a team!",
+                type: 'warning'
+            })
             navigate('/login');
             return;
         }
@@ -44,7 +48,10 @@ const HackathonDetails = () => {
 
     const handleRequestJoin = async (teamId) => {
         if (!user) {
-            alert("Please login to join the team!");
+            showToast({
+                message: "Please login to join a team!",
+                type: 'warning'
+            })
             navigate('/login');
             return;
         }
@@ -53,12 +60,18 @@ const HackathonDetails = () => {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
             const res = await axios.post(`http://localhost:5000/api/teams/${teamId}/request`, {}, config);
-            alert(res.data.message || "Join request sent to captain!");
+            showToast({
+                message: "Join request sent to captain!",
+                type: 'info'
+            })
 
             const resTeams = await axios.get(`http://localhost:5000/api/teams?hackathon=${id}`);
             setTeams(resTeams.data);
         } catch (error) {
-            alert(error.response?.data?.message || "Failed to send request");
+            showToast({
+                message: `${error.response?.data?.message}`,
+                type: 'error'
+            })
         }
     }
 
@@ -69,11 +82,18 @@ const HackathonDetails = () => {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
             const res = await axios.post(`http://localhost:5000/api/teams/${teamId}/leave`, {}, config);
-            alert(res.data.message || "You have left the team.");
+            showToast({
+                message: 'You have left the team',
+                type:'info'
+            })
             const resTeam = await axios.get(`http://localhost:5000/api/teams?hackathon=${id}`);
             setTeams(resTeam.data);
+            
         } catch (error) {
-            alert(error.response?.data?.message || "Failed to leave team");
+            showToast({
+                message: `${error.response?.data?.message}`,
+                type:'error'
+            })
         }
     };
 
@@ -94,7 +114,7 @@ const HackathonDetails = () => {
     }
 
     return (
-        <div className='w-full min-h-screen bg-transparent'>
+        <div className='w-full min-h-screen bg-transparent mt-8'>
             <div className="max-w-5xl mx-auto p-10">
                 <div className="inline-block
                         text-xs font-bold border-2 border-black uppercase tracking-widest
@@ -221,7 +241,7 @@ const HackathonDetails = () => {
 
                                                 <button
                                                     onClick={() => navigate(`/hackathon/${id}/my-team`)}
-                                                    className="w-full border-2 bg-purple-200 text-black border-black py-3 text-xs font-black uppercase tracking-widest hover:bg-purple-300 active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none"
+                                                    className="w-full border-2 bg-purple-200 text-black border-black py-3 text-xs font-bold uppercase tracking-widest hover:bg-purple-300 active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none"
                                                 >
                                                     View Team Dashboard →
                                                 </button>

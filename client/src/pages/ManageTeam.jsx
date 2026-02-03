@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { LoaderFive } from '@/components/ui/loader';
 import LoadingScreen from './LoadingScreen';
+import { showToast } from '@/components/SystemToast';
 
 const ManageTeam = () => {
     const { teamId } = useParams();
@@ -61,10 +62,16 @@ const ManageTeam = () => {
 
             setTeam(data);
             setIsEditing(false);
-            alert('Team profile updated successfully!');
+            showToast({
+                message:'Team profile updated successfully!',
+                type: 'success'
+            })
         }
         catch (error) {
-            alert(error.response?.data?.message || 'Update failed');
+            showToast({
+                message: `${error.response?.data?.message}`,
+                type: 'error'
+            })
         }
     }
 
@@ -76,10 +83,16 @@ const ManageTeam = () => {
                 { userId: requestingUserId, action },
                 config
             );
-            alert(data.message);
+            showToast({
+                message: `${data.message}`,
+                type: 'info'
+            })
             fetchTeam();
         } catch (error) {
-            alert(error.response?.data?.message || "Action failed");
+            showToast({
+                message: `${error.response?.data?.message}`,
+                type:'error'
+            })
         }
     };
 
@@ -98,11 +111,17 @@ const ManageTeam = () => {
                 config
             );
 
-            alert("Member removed successfully");
+            showToast({
+                message: "Member removed successfully",
+                type:'success'
+            })
             fetchTeam();
         }
         catch (error) {
-            alert(error.response?.data?.message || "Error removing member");
+            showToast({
+                message: `${error.response?.data?.message}`,
+                type:'error'
+            })
         }
     };
 
@@ -122,11 +141,18 @@ const ManageTeam = () => {
 
             await axios.delete(`http://localhost:5000/api/teams/${teamId}`, config);
 
-            alert("Team deleted successfully.");
+            showToast({
+                message: 'Team deleted successfully.',
+                type: 'success'
+            })
             navigate(-1);
         }
         catch (error) {
-            alert(error.response?.data?.message || "Failed to delete team");
+            showToast({
+                message: `${error.response?.data?.message}`,
+                type: 'error'
+            })
+
         }
     }
 
@@ -136,7 +162,7 @@ const ManageTeam = () => {
         );
     }
     return (
-        <div className="max-w-4xl mx-auto p-10 bg-transparent min-h-screen">
+        <div className="max-w-4xl mx-auto p-10 bg-transparent min-h-screen mt-8 mb-16">
             <button onClick={() => navigate(-1)} className="text-xs border border-black shadow-[2px_2px_0px_0px] py-0.5 px-2 bg-white active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all font-bold uppercase mb-8">← Back</button>
 
             {isEditing ? (

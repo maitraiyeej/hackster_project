@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import LoadingScreen from './LoadingScreen';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { showToast } from '@/components/SystemToast';
 
 const socket = io('http://localhost:5000');
 
@@ -58,7 +59,10 @@ const ViewTeam = () => {
             navigate(`/hackathon/${id}`);
         } catch (err) {
             console.error("Leave Error:", err.response?.data);
-            alert(err.response?.data?.message || "SYSTEM_ERROR: LEAVE_COMMAND_FAILED");
+            showToast({
+                message: `${err.response?.data?.message}`,
+                type: 'error'
+            })
         }
     };
 
@@ -114,7 +118,7 @@ const ViewTeam = () => {
     );
 
     return (
-        <div className="max-w-[1200px] mx-auto p-4 md:p-8 animate-in fade-in duration-700">
+        <div className="max-w-[1200px] mx-auto p-4 md:p-8 animate-in fade-in duration-700 mt-8">
             <div className="border-2 border-black p-6 md:p-8 bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none
 hover:translate-x-[6px]
 hover:translate-y-[6px]

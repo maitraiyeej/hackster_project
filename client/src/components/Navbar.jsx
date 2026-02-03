@@ -9,7 +9,6 @@ import {
   IconPlus,
   IconUser,
   IconLogout,
-  IconLockOpen,
   IconLogin,
   IconUserPlus
 } from "@tabler/icons-react";
@@ -54,8 +53,8 @@ const Navbar = () => {
       {
         title: "Logout",
         icon: <IconLogout className="h-full w-full text-black" />,
-        onClick: handleLogout, 
-        href: "#", 
+        onClick: handleLogout,
+        href: "#",
         color: "#ffa1ad",
       }
     ] : [
@@ -72,19 +71,13 @@ const Navbar = () => {
         href: "/register",
         color: '#BEF264'
 
-        
+
       }
     ]),
   ];
 
   return (
     <>
-      <div className="fixed top-0 left-0 w-full h-20 flex justify-between items-center px-10 z-50 pointer-events-none">
-        <Link to="/" className="text-3xl font-black tracking-tighter uppercase italic group pointer-events-auto">
-            HACK<span className="bg-black text-white px-1 not-italic transition-colors">STER</span>
-        </Link>
-      </div>
-
       <div className="fixed bottom-8 left-0 right-0 flex items-center justify-center z-50 pointer-events-none">
         <div className="pointer-events-auto">
           <FloatingDock

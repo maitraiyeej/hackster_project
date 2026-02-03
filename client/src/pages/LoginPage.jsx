@@ -5,6 +5,9 @@ import { useDispatch } from "react-redux";
 import { setCredentials } from "../features/auth/authSlice";
 import BrutalistCard from "@/components/ui/BrutalistCard";
 import { toast } from "react-toastify";
+import { showToast, SystemToast } from "@/components/SystemToast";
+
+
 
 const LoginPage = () => {
     const dispatch = useDispatch();
@@ -26,14 +29,17 @@ const LoginPage = () => {
             const userData = await login(formData).unwrap();
             dispatch(setCredentials(userData));
             navigate("/");
-            toast.success(`Welcome back, ${userData.name}!`);
+            showToast({
+                message: `WELCOME BACK, ${userData.name}!`,
+                type:'info'
+            });
         } catch (err) {
             console.error("Login failed:", err);
         }
     };
 
     return (
-        <div className="flex min-h-[80vh] items-center justify-center p-4">
+        <div className="flex min-h-[80vh] items-center justify-center p-4 mt-8">
             <BrutalistCard
                 color="bg-white"
                 shadowSize="8px"

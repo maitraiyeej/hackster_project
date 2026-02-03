@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import BrutalistCard from '@/components/ui/BrutalistCard';
+import { showToast } from '@/components/SystemToast';
 
 const CreateTeam = () => {
     const { id } = useParams();
@@ -49,17 +50,23 @@ const CreateTeam = () => {
 
             await axios.post('http://localhost:5000/api/teams', payload, config);
 
-            alert("Team created successfully!");
+            showToast({
+                message: 'Team Created Successfully!',
+                type: 'success'
+            })
             navigate(`/hackathon/${id}`);
         } catch (error) {
             console.error("Backend Error:", error.response?.data);
-            alert(error.response?.data?.message || "Failed to create team");
+            showToast({
+                message: `${error.response?.data?.message} `,
+                type: error
+            })
         } finally {
             setLoading(false);
         }
     };
     return (
-        <BrutalistCard className="max-w-xl mx-auto bg-white ">
+        <BrutalistCard className="max-w-xl mx-auto bg-white mt-12">
             <h2 className="text-3xl font-black tracking-tighter mb-8 italic uppercase">Create your own Team</h2>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-8">

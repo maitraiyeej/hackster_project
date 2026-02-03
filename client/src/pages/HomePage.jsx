@@ -6,6 +6,8 @@ import LoadingScreen from './LoadingScreen';
 import BrutalistButton from '@/components/ui/BrutalistButton';
 import BrutalistCard from '@/components/ui/BrutalistCard';
 import Footer from '@/components/Footer';
+import headerBg from '@/assets/image-background.jpg';
+import { motion } from "framer-motion";
 
 const HomePage = ({ user }) => {
   const [myEventsCount, setMyEventsCount] = useState(0);
@@ -36,59 +38,118 @@ const HomePage = ({ user }) => {
 
   return (
     <div className="min-h-full">
-      <header className="border-b-4 border-black py-20 px-10 bg-transparent relative overflow-hidden">
+      <div className=' top-0 w-full h-12 flex items-center justify-center px-10 z-50 bg-[#04040d] text-white text-[24px]'>
+        <span className='uppercase font-bold italic'>Hack</span>
+        <span className='uppercase font-bold  bg-white text-black px-1'>Ster</span>
+      </div>
+      <header
+        className="relative border-b-4 border-black py-20 px-10 bg-cover bg-center overflow-hidden"
+        style={{ backgroundImage: `url(${headerBg})` }}
+      >
 
+        {/* overlay */}
 
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-start gap-12">
+        <div className="absolute inset-0 bg-black/65" />
+
+        {/* content */}
+        <div className="relative z-10 max-w-7xl mx-auto flex flex-col lg:flex-row justify-between gap-12">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-6">
-              <span className="text-sm font-bold uppercase tracking-widest animate-pulse">
-          // {isAdmin ? "ROOT_ACCESS" : "USER_ACCESS"}
-              </span>
-            </div>
+            <span className="block mb-6 text-sm font-bold uppercase tracking-widest text-white/70">
+              // {isAdmin ? "ROOT_ACCESS" : "USER_ACCESS"}
+            </span>
 
-            <h1 className="text-7xl md:text-[120px] font-black tracking-tighter leading-[0.85] uppercase italic">
+            <h1 className="text-7xl md:text-[120px] font-black uppercase italic leading-[0.85] tracking-tighter text-white">
               {isAdmin ? (
                 <>
-                  ORGANIZE <br />
-                  <span className="text-transparent" style={{ WebkitTextStroke: '2px black' }}>MANAGE</span> <br />
-                  <span className="bg-[#BEF264] px-4 -rotate-1 inline-block mt-2">SCALE</span>
+                  <motion.span
+                    initial={{ opacity: 0, y: 0, filter: "blur(12px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ duration: 0.7, ease: "easeOut" }}
+                    className="block"
+                  >
+                    ORGANIZE
+                  </motion.span>
+
+
+                  <motion.span
+                    initial={{ opacity: 0, y: 40, filter: "blur(12px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ delay: 0.2, duration: 0.7, ease: "easeOut" }}
+                    className="block text-transparent"
+                    style={{ WebkitTextStroke: "2px white" }}
+                  >
+                    MANAGE
+                  </motion.span>
+
+                  <motion.span
+                    initial={{ opacity: 0, y: 40, filter: "blur(12px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ delay: 0.4, duration: 0.7, ease: "easeOut" }}
+                    className="inline-block text-white px-4 mt-2 rotate-1"
+                  >
+                    SCALE
+                  </motion.span>
+
                 </>
+
               ) : (
                 <>
-                  BUILD <br />
-                  <span className="text-transparent" style={{ WebkitTextStroke: '2px black' }}>COLLABORATE</span> <br />
-                  <span className="bg-[#22D3EE] px-4 rotate-1 inline-block mt-2">GROW</span>
+                  <motion.span
+                    initial={{ opacity: 0, y: 40, filter: "blur(12px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ duration: 0.7, ease: "easeOut" }}
+                    className="block"
+                  >
+                    BUILD
+                  </motion.span>
+
+                  <motion.span
+                    initial={{ opacity: 0, y: 40, filter: "blur(12px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ delay: 0.2, duration: 0.7, ease: "easeOut" }}
+                    className="block text-transparent"
+                    style={{ WebkitTextStroke: "2px white" }}
+                  >
+                    COLLABORATE
+                  </motion.span>
+
+                  <motion.span
+                    initial={{ opacity: 0, y: 40, filter: "blur(12px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ delay: 0.4, duration: 0.7, ease: "easeOut" }}
+                    className="inline-block text-white px-4 mt-2 rotate-1"
+                  >
+                    GROW
+                  </motion.span>
                 </>
+
               )}
             </h1>
           </div>
 
           <div className="max-w-md">
-            <div className="border-l-8 border-black pl-8 py-4">
-              <p className="text-lg font-black uppercase leading-tight tracking-tighter mb-3">
+            <div className="border-l-8 border-white pl-8 py-4">
+              <p className="text-lg font-black uppercase tracking-tight mb-3 text-white">
                 {isAdmin
                   ? "TOTAL CONTROL CENTER V.01"
                   : "JOIN THE RESISTANCE OF BUILDERS"}
               </p>
-              <p className="text-sm font-mono font-medium opacity-80 leading-relaxed">
+              <p className="text-sm font-mono leading-relaxed text-white/80">
                 {isAdmin
                   ? "MANAGE YOUR HACKATHONS, TRACK REGISTRATIONS, AND EMPOWER THE NEXT GENERATION OF BUILDERS FROM YOUR COMMAND CENTER."
-                  : "EXPLORE THE WORLD OF COLLABORATIVE BUILDING AND TAKE YOUR SKILLS TO THE NEXT LEVEL."
-                }
+                  : "EXPLORE THE WORLD OF COLLABORATIVE BUILDING AND TAKE YOUR SKILLS TO THE NEXT LEVEL."}
               </p>
             </div>
           </div>
         </div>
       </header>
-
       <section className="grid grid-cols-1 md:grid-cols-3 border-b border-black items-stretch bg-transparent">
         <div className="p-8 border-r border-black flex flex-col justify-center items-center">
           {isAdmin ? (
             <BrutalistButton
               onClick={() => navigate('/explore')}
-              color="bg-[#F1E4C3]"
-              className="w-full h-14 text-[10px] tracking-[0.2em] flex justify-between items-center px-4"
+              color="bg-[#b3e9c7]"
+              className="w-full h-14 text-black text-[11px] tracking-[0.2em] flex justify-between items-center px-4"
               shadowSize="4px"
             >
               <span className="font-black italic">GLOBAL FEED</span>
@@ -103,7 +164,7 @@ const HomePage = ({ user }) => {
                 <span className="text-4xl font-black italic leading-none">
                   {(hackathons?.length || 0)}+
                 </span>
-                <span className="text-[10px] font-black uppercase tracking-widest mt-1 opacity-60">
+                <span className="text-[11px] font-black uppercase tracking-widest mt-1 opacity-60">
                   Active Hackathons
                 </span>
               </div>
@@ -118,8 +179,8 @@ const HomePage = ({ user }) => {
           {isAdmin ? (
             <BrutalistButton
               onClick={() => navigate('/admin')}
-              color="bg-[#C6A969]"
-              className="text-[10px] tracking-[0.2em] flex justify-between items-center w-full h-14 px-4"
+              color="bg-[#95d5b2]"
+              className="text-[11px] text-black tracking-[0.2em] flex justify-between items-center w-full h-14 px-4"
               shadowSize="4px"
             >
               <span className="font-black italic">CREATE NEW EVENT</span>
@@ -139,12 +200,12 @@ const HomePage = ({ user }) => {
         <div className="p-8 flex items-center justify-center">
           <BrutalistButton
             onClick={() => navigate(isAdmin ? '/my-events' : '/explore')}
-            color='bg-[#597E52]'
+            color='bg-[#a8dadc]'
             shadowSize='4px'
-            className="text-[10px] tracking-[0.2em] flex justify-between items-center w-full h-14 px-4"
+            className="text-[11px] tracking-[0.2em] flex justify-between items-center w-full h-14 px-4"
           >
-            <span className="font-black text-white italic">{isAdmin ? "YOUR EVENTS" : "FIND HACKATHONS"}</span>
-            <span className='text-xl text-white'>→</span>
+            <span className="font-black text-black italic">{isAdmin ? "YOUR EVENTS" : "FIND HACKATHONS"}</span>
+            <span className='text-xl text-black'>→</span>
           </BrutalistButton>
         </div>
       </section>
@@ -163,7 +224,7 @@ const HomePage = ({ user }) => {
                 className="block no-underline text-black group"
               >
                 <BrutalistCard
-                  color="bg-white" 
+                  color="bg-white"
                   shadowSize="8px"
                   className="hover:cursor-pointer"
                 >
@@ -193,10 +254,10 @@ const HomePage = ({ user }) => {
           </div>
         </section>
       </div>
-    
-    <Footer/>
+
+      <Footer />
     </div>
-    
+
   );
 };
 

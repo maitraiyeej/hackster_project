@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import LoadingScreen from './LoadingScreen';
+import { showToast } from '@/components/SystemToast';
 
 const MyEvents = () => {
     const [myEvents, setMyEvents] = useState([]);
@@ -34,13 +35,20 @@ const MyEvents = () => {
                 headers: { Authorization: `Bearer ${userInfo.token}` }
             });
             fetchMyEvents();
+            showToast({
+                message: 'Event deleted successfully!',
+                type:'success'
+            })
         } catch (err) {
-            alert("Execution failed.");
+            showToast({
+                message: 'Execution failed.',
+                type: 'error'
+            })
         }
     };
 
     return (
-        <div className="w-full min-h-screen bg-transparent p-6 md:p-12">
+        <div className="w-full min-h-screen bg-transparent p-6 md:p-12 mt-8">
             <div className="max-w-5xl mx-auto">
                 {/* HEADER */}
                 <header className="mb-5 border-b-2 border-black pb-4">

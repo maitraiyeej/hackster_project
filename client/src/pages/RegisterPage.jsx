@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useRegisterMutation } from "../services/authApi";
 import BrutalistCard from "@/components/ui/BrutalistCard";
+import { showToast } from "@/components/SystemToast";
 
 const RegisterPage = () => {
     const navigate = useNavigate();
@@ -27,13 +28,20 @@ const RegisterPage = () => {
             const userData = await register(formData).unwrap();
             const userId = userData._id || userData.id || userData.user?._id;
             navigate(userId ? `/user/${userId}` : "/");
+            showToast({
+                message: 'Account created successfully!',
+                type:'success'
+            })
         } catch (err) {
-            console.error("Registration failed:", err);
+            showToast({
+                message:'Registration failed',
+                type:'error'
+            })
         }
     };
 
     return (
-        <div className="flex min-h-[80vh] items-center justify-center p-4">
+        <div className="flex min-h-[80vh] items-center justify-center p-4 mt-10 mb-24">
             <BrutalistCard
                 color="bg-white"
                 shadowSize="8px"

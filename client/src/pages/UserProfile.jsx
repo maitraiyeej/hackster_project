@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import LoadingScreen from './LoadingScreen';
 import BrutalistCard from '@/components/ui/BrutalistCard';
+import { showToast } from '@/components/SystemToast';
 
 const UserProfile = () => {
     const { id } = useParams();
@@ -51,9 +52,16 @@ const UserProfile = () => {
             await axios.put(`http://localhost:5000/api/users/profile`, updatedData, config);
             setProfile({ ...profile, ...updatedData, skills: updatedData.skills });
             setIsEditing(false);
+            showToast({
+                message: 'Profile updated!',
+                type: 'info'
+            })
         }
         catch (error) {
-            alert("Update failed.");
+            showToast({
+                message: 'Update failed.',
+                type:'error'
+            })
         }
     };
 
@@ -63,7 +71,7 @@ const UserProfile = () => {
     const isOwner = loggedInUser?._id === profile._id;
 
     return (
-        <div className="max-w-4xl mx-auto p-6 md:p-10 bg-transparent min-h-screen">
+        <div className="max-w-4xl mx-auto p-6 md:p-10 bg-transparent min-h-screen mt-8">
             {/* TOP NAVIGATION */}
             <div className="flex justify-between items-center mb-10">
                 <button 
