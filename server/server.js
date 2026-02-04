@@ -18,14 +18,12 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// --- ROUTES ---
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/hackathons', hackathonRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/messages', messageRoutes); // Use your message routes
 
-// --- SOCKET.IO SETUP ---
 const server = http.createServer(app); // 4. Create HTTP server from express app
 const io = new Server(server, {
     cors: {
@@ -34,29 +32,24 @@ const io = new Server(server, {
     }
 });
 
-// 5. Socket Logic
 io.on('connection', (socket) => {
     console.log(`User Connected: ${socket.id}`);
 
-    // Join a specific team room
     socket.on('join_team', (teamId) => {
         socket.join(teamId);
         console.log(`User joined room: ${teamId}`);
     });
 
-    // Handle sending message
     socket.on('send_message', async (data) => {
         try {
             const { teamId, senderId, text } = data;
 
-            // Save message to MongoDB
             const newMessage = await Message.create({
                 team: teamId,
                 sender: senderId,
                 text: text
             });
 
-            // Populate sender name for the UI
             const populatedMessage = await newMessage.populate('sender', 'name');
 
             // Broadcast message only to that team room
@@ -89,7 +82,6 @@ const connectDB = async () => {
 
 const startServer = async () => {
     await connectDB();
-    // 6. Change app.listen to server.listen
     server.listen(PORT, () => {
         console.log(`Server running on port ${PORT} (Socket.io Enabled)`);
     });
