@@ -5,6 +5,7 @@ import LoadingScreen from './LoadingScreen';
 import { useSelector } from 'react-redux';
 import BrutalistCard from '@/components/ui/BrutalistCard';
 import { showToast } from '@/components/SystemToast';
+const API = import.meta.env.VITE_API_URL;
 
 const HackathonDetails = () => {
     const [teams, setTeams] = useState([]);
@@ -13,16 +14,15 @@ const HackathonDetails = () => {
     const [hackathon, setHackathon] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Get user from Redux store
     const { user } = useSelector((state) => state.auth);
 
     useEffect(() => {
         const fetchAllData = async () => {
             try {
-                const resHack = await axios.get(`http://localhost:5000/api/hackathons/${id}`);
+                const resHack = await axios.get(`${API}/api/hackathons/${id}`);
                 setHackathon(resHack.data);
 
-                const resTeams = await axios.get(`http://localhost:5000/api/teams?hackathon=${id}`);
+                const resTeams = await axios.get(`${API}/api/teams?hackathon=${id}`);
                 setTeams(resTeams.data);
 
                 setLoading(false);
@@ -59,13 +59,13 @@ const HackathonDetails = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const res = await axios.post(`http://localhost:5000/api/teams/${teamId}/request`, {}, config);
+            const res = await axios.post(`${API}/api/teams/${teamId}/request`, {}, config);
             showToast({
                 message: "Join request sent to captain!",
                 type: 'info'
             })
 
-            const resTeams = await axios.get(`http://localhost:5000/api/teams?hackathon=${id}`);
+            const resTeams = await axios.get(`${API}/api/teams?hackathon=${id}`);
             setTeams(resTeams.data);
         } catch (error) {
             showToast({
@@ -76,23 +76,32 @@ const HackathonDetails = () => {
     }
 
     const handleLeaveTeam = async (teamId) => {
+        if (!user) {
+            showToast({
+                message: "Please login again!",
+                type: "warning"
+            });
+            navigate("/login");
+            return;
+        }
+
         if (!window.confirm("Are you sure you want to leave this team?")) return;
         try {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const res = await axios.post(`http://localhost:5000/api/teams/${teamId}/leave`, {}, config);
+            const res = await axios.post(`${API}/api/teams/${teamId}/leave`, {}, config);
             showToast({
                 message: 'You have left the team',
-                type:'info'
+                type: 'info'
             })
-            const resTeam = await axios.get(`http://localhost:5000/api/teams?hackathon=${id}`);
+            const resTeam = await axios.get(`${API}/api/teams?hackathon=${id}`);
             setTeams(resTeam.data);
-            
+
         } catch (error) {
             showToast({
                 message: `${error.response?.data?.message}`,
-                type:'error'
+                type: 'error'
             })
         }
     };
@@ -128,7 +137,7 @@ const HackathonDetails = () => {
                 ">
                     {hackathon.location || 'Remote'}
                 </div>
- 
+
                 <h1 className='text-5xl font-bold italic tracking-tighter mt-4'>{hackathon.name}</h1>
                 <p className='text-xl text-gray-500 font-semibold mt-2'>{hackathon.organization}</p>
 
@@ -184,7 +193,7 @@ const HackathonDetails = () => {
                 <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6 pb-24">
                     {teams.length > 0 ? (
                         teams.map((team) => {
-                            const isMember = team.members.some(m => (m._id || m) === user?._id);
+                            const isMember = team.members?.some(m => (m._id || m) === user?._id) || false;
                             const isCaptain = (team.captain?._id || team.captain) === user?._id;
                             const isFull = team.status === 'Full' || (team.members?.length >= team.teamSize);
                             const isSubmitted = team.status === 'Submitted';

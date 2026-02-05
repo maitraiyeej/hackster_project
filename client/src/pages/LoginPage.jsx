@@ -4,7 +4,6 @@ import { useLoginMutation } from "../services/authApi";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../features/auth/authSlice";
 import BrutalistCard from "@/components/ui/BrutalistCard";
-import { toast } from "react-toastify";
 import { showToast, SystemToast } from "@/components/SystemToast";
 
 
@@ -34,7 +33,10 @@ const LoginPage = () => {
                 type:'info'
             });
         } catch (err) {
-            console.error("Login failed:", err);
+            showToast({
+                message: 'LOGIN FAILED',
+                type: 'error'
+            })
         }
     };
 

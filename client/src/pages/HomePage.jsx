@@ -8,8 +8,11 @@ import BrutalistCard from '@/components/ui/BrutalistCard';
 import Footer from '@/components/Footer';
 import headerBg from '@/assets/image-background.jpg';
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
+const API = import.meta.env.VITE_API_URL;
 
-const HomePage = ({ user }) => {
+const HomePage = () => {
+  const { user } = useSelector((state) => state.auth);
   const [myEventsCount, setMyEventsCount] = useState(0);
   const { data: hackathons, isLoading, error } = useGetHackathonsQuery();
   const navigate = useNavigate();
@@ -22,7 +25,7 @@ const HomePage = ({ user }) => {
           const config = {
             headers: { Authorization: `Bearer ${user.token}` }
           }
-          const { data } = await axios.get('http://localhost:5000/api/hackathons/my-events', config);
+          const { data } = await axios.get(`${API}/api/hackathons/my-events`, config);
           setMyEventsCount(data.length);
         }
         catch (err) {
@@ -31,7 +34,7 @@ const HomePage = ({ user }) => {
       }
     }
     fetchAdminStats();
-  }, [isAdmin, user]);
+  }, [isAdmin, user?.token]);
 
   if (isLoading) return <LoadingScreen message='LOADING_DATA...' />;
   if (error) return <div className="flex h-full items-center justify-center text-red-500">Error connecting to API.</div>;

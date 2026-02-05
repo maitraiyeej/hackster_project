@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import LoadingScreen from './LoadingScreen';
 import BrutalistCard from '@/components/ui/BrutalistCard';
+const API = import.meta.env.VITE_API_URL;
+
 
 const ExplorePage = () => {
     const [hackathons, setHackathons] = useState([]);
@@ -14,9 +16,9 @@ const ExplorePage = () => {
     useEffect(() => {
         const fetchAll = async () => {
             try {
-                const { data } = await axios.get('http://localhost:5000/api/hackathons');
+                const { data } = await axios.get(`${API}/api/hackathons`);
                 setHackathons(data);
-                setFilteredHackathons(data); // Initial view shows all
+                setFilteredHackathons(data); 
             } catch (err) {
                 console.error("Error fetching feed", err);
             } finally {
@@ -27,6 +29,10 @@ const ExplorePage = () => {
     }, []);
 
     useEffect(() => {
+        if (!search) {
+            setFilteredHackathons(hackathons);
+            return;
+        }
         const query = search.toLowerCase();
         const results = hackathons.filter(h =>
             h.name.toLowerCase().includes(query) ||

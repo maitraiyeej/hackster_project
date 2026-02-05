@@ -1,8 +1,9 @@
 //this file handles all API communicatilns and automatically injects JWT
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const baseQuery = fetchBaseQuery({
-  baseUrl:'http://localhost:5000/api',          //all api requests start from this base url
+  baseUrl:`${BASE_URL}/api`,          //all api requests start from this base url
 
   //runs before every api request
   prepareHeaders: (headers, {getState}) => {

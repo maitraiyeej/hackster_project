@@ -3,17 +3,19 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import LoadingScreen from './LoadingScreen';
 import { showToast } from '@/components/SystemToast';
+import { useSelector } from 'react-redux';
+const API = import.meta.env.VITE_API_URL;
 
 const MyEvents = () => {
     const [myEvents, setMyEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const { user } = useSelector((state) => state.auth);
 
     const fetchMyEvents = async () => {
         try {
-            const userInfo = JSON.parse(localStorage.getItem('user'));
-            const { data } = await axios.get('http://localhost:5000/api/hackathons/my-events', {
-                headers: { Authorization: `Bearer ${userInfo.token}` }
+            const { data } = await axios.get(`${API}/api/hackathons/my-events`, {
+                headers: { Authorization: `Bearer ${user.token}` }
             });
             setMyEvents(data);
         } catch (err) {
@@ -25,19 +27,18 @@ const MyEvents = () => {
 
     useEffect(() => {
         fetchMyEvents();
-    }, []);
+    }, [user?.token]);
 
     const handleDelete = async (id) => {
         if (!window.confirm("CRITICAL: DELETE PERMANENTLY?")) return;
         try {
-            const userInfo = JSON.parse(localStorage.getItem('user'));
-            await axios.delete(`http://localhost:5000/api/hackathons/${id}`, {
-                headers: { Authorization: `Bearer ${userInfo.token}` }
+            await axios.delete(`${API}/api/hackathons/${id}`, {
+                headers: { Authorization: `Bearer ${user.token}` }
             });
             fetchMyEvents();
             showToast({
                 message: 'Event deleted successfully!',
-                type:'success'
+                type: 'success'
             })
         } catch (err) {
             showToast({
@@ -58,7 +59,7 @@ const MyEvents = () => {
                                 MY Events
                             </h1>
                         </div>
-                        <button 
+                        <button
                             onClick={() => navigate('/admin')}
                             className="bg-green-100 border-2 border-black px-6 py-2 text-[10px] font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-green-200  active:shadow-none
                     active:translate-x-[4px]
@@ -70,13 +71,13 @@ const MyEvents = () => {
                 </header>
 
                 {loading ? (
-                    <LoadingScreen message='ACCESSING_ENCRYPTED_FILES...'/>
+                    <LoadingScreen message='ACCESSING_ENCRYPTED_FILES...' />
                 ) : (
                     <div className="space-y-8">
                         {myEvents.map((event) => (
-                            <div key={event._id} 
-                                 className="bg-white border-2  border-black p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px] transition-all group">
-                                
+                            <div key={event._id}
+                                className="bg-white border-2  border-black p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px] transition-all group">
+
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-4">
                                         <span className="text-[9px] font-black bg-yellow-200 text-black border-2 border-black font-bold shadow-[2px_2px_0px_0px] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition all px-2 py-0.5 uppercase tracking-widest">
@@ -102,7 +103,7 @@ const MyEvents = () => {
                                         onClick={() => handleDelete(event._id)}
                                         className="flex-1 md:flex-none px-6 py-3 bg-red-200 border-2 border-black text-[10px] font-black uppercase tracking-widest hover:bg-red-300 transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
                                     >
-                                        DELETE 
+                                        DELETE
                                     </button>
                                 </div>
                             </div>
@@ -111,8 +112,8 @@ const MyEvents = () => {
                         {myEvents.length === 0 && (
                             <div className="border-8 border-dotted border-black p-20 text-center bg-white shadow-[12px_12px_0px_0px_rgba(252,165,165,1)]">
                                 <p className="text-black font-black text-xl uppercase tracking-tighter italic">NO_RECORDS_FOUND_IN_SYSTEM</p>
-                                <button 
-                                    onClick={() => navigate('/admin')} 
+                                <button
+                                    onClick={() => navigate('/admin')}
                                     className="mt-6 text-sm font-black uppercase underline hover:text-[#91E1F2] transition-colors"
                                 >
                                     DEPLOY_YOUR_FIRST_HACKATHON_NOW

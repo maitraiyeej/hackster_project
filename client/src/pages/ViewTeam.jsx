@@ -6,36 +6,32 @@ import LoadingScreen from './LoadingScreen';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { showToast } from '@/components/SystemToast';
 
-const socket = io('http://localhost:5000');
+const API = import.meta.env.VITE_API_URL;
 
 const ViewTeam = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [team, setTeam] = useState(null);
-    const [loading, setLoading] = useState(true);
     const { user } = useSelector((state) => state.auth);
 
+    const socketRef = useRef(null);
+    const chatEndRef = useRef(null);
+
+    const [team, setTeam] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [messages, setMessages] = useState([]);
     const [msgInput, setMsgInput] = useState("");
     const [chatInitialized, setChatInitialized] = useState(false);
-    const chatEndRef = useRef(null);
-
-    const scrollToBottom = () => {
-        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
 
     const fetchTeam = async () => {
         if (!user?.token || !id) return;
+
         try {
-            setLoading(true);
-            const config = {
+            const { data } = await axios.get(`${API}/api/teams/my-team`, {
                 headers: { Authorization: `Bearer ${user.token}` },
                 params: { hackathonId: id }
-            };
-            const { data } = await axios.get('http://localhost:5000/api/teams/my-team', config);
+            });
             setTeam(data);
-        } catch (err) {
-            console.error("API Error:", err.response?.data || err.message);
+        } catch {
             setTeam(null);
         } finally {
             setLoading(false);
@@ -46,76 +42,105 @@ const ViewTeam = () => {
         fetchTeam();
     }, [user?.token, id]);
 
+    useEffect(() => {
+        if (!user?.token) return;
+
+        socketRef.current = io(API, {
+            auth: { token: user.token }
+        });
+
+        return () => {
+            socketRef.current?.disconnect();
+        };
+    }, [user?.token]);
+
+    useEffect(() => {
+        if (!team?._id || !chatInitialized || !socketRef.current) return;
+
+        const socket = socketRef.current;
+
+        socket.emit('join_team', team._id);
+
+        const handleReceiveMessage = (msg) => {
+            setMessages((prev) => [...prev, msg]);
+        };
+
+        socket.on('receive_message', handleReceiveMessage);
+
+        return () => {
+            socket.off('receive_message', handleReceiveMessage);
+        };
+    }, [team?._id, chatInitialized]);
+
+    useEffect(() => {
+        if (!team?._id || !chatInitialized) return;
+
+        const fetchHistory = async () => {
+            try {
+                const { data } = await axios.get(
+                    `${API}/api/messages/${team._id}`,
+                    { headers: { Authorization: `Bearer ${user.token}` } }
+                );
+
+                setMessages([]);      
+                setMessages(data);
+            } catch (err) {
+                console.error("Chat history error", err);
+            }
+        };
+
+        fetchHistory();
+    }, [team?._id, chatInitialized]);
+
+    useEffect(() => {
+        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
+    const handleSendMessage = () => {
+        if (!msgInput.trim() || !socketRef.current) return;
+
+        socketRef.current.emit('send_message', {
+            teamId: team._id,
+            senderId: user._id,
+            text: msgInput
+        });
+
+        setMsgInput("");
+    };
+
     const handleLeaveTeam = async () => {
         if (!window.confirm("CONFIRM_SQUAD_EXIT: THIS_ACTION_CANNOT_BE_UNDONE")) return;
 
         try {
-            const config = {
-                headers: { Authorization: `Bearer ${user.token}` }
-            };
-
-            await axios.post(`http://localhost:5000/api/teams/${team._id}/leave`, {}, config);
-
+            await axios.post(
+                `${API}/api/teams/${team._id}/leave`,
+                {},
+                { headers: { Authorization: `Bearer ${user.token}` } }
+            );
             navigate(`/hackathon/${id}`);
         } catch (err) {
-            console.error("Leave Error:", err.response?.data);
             showToast({
-                message: `${err.response?.data?.message}`,
+                message: err.response?.data?.message,
                 type: 'error'
-            })
-        }
-    };
-
-    useEffect(() => {
-        if (team?._id && chatInitialized) {
-            socket.emit('join_team', team._id);
-
-            const fetchHistory = async () => {
-                try {
-                    const config = { headers: { Authorization: `Bearer ${user.token}` } };
-                    const { data } = await axios.get(`http://localhost:5000/api/messages/${team._id}`, config);
-                    setMessages(data);
-                } catch (err) {
-                    console.error("Error fetching chat history", err);
-                }
-            };
-            fetchHistory();
-
-            socket.on('receive_message', (newMessage) => {
-                setMessages((prev) => [...prev, newMessage]);
             });
         }
-
-        return () => {
-            socket.off('receive_message');
-        };
-    }, [team?._id, chatInitialized, user.token]);
-
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
-
-    const handleSendMessage = () => {
-        if (!msgInput.trim()) return;
-        const messageData = {
-            teamId: team._id,
-            senderId: user._id,
-            text: msgInput
-        };
-        socket.emit('send_message', messageData);
-        setMsgInput("");
     };
 
     if (loading) return <LoadingScreen message="SYNCING_TEAM_INTEL..." />;
 
-    if (!team) return (
-        <div className="h-[60vh] flex flex-col items-center justify-center p-10 font-black uppercase italic text-center">
-            <h2 className="text-3xl mb-4">No_Team_Found</h2>
-            <Link to={`/hackathon/${id}`} className="text-sm bg-black text-white px-4 py-2 hover:bg-yellow-400 hover:text-black transition-colors">
-                Return to recruiting page
-            </Link>
-        </div>
-    );
+    if (!team) {
+        return (
+            <div className="h-[60vh] flex flex-col items-center justify-center p-10 font-black uppercase italic text-center">
+                <h2 className="text-3xl mb-4">No_Team_Found</h2>
+                <Link
+                    to={`/hackathon/${id}`}
+                    className="text-sm bg-black text-white px-4 py-2 hover:bg-yellow-400 hover:text-black transition-colors"
+                >
+                    Return to recruiting page
+                </Link>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-[1200px] mx-auto p-4 md:p-8 animate-in fade-in duration-700 mt-8">

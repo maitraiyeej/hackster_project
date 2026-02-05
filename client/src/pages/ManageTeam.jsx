@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { LoaderFive } from '@/components/ui/loader';
 import LoadingScreen from './LoadingScreen';
 import { showToast } from '@/components/SystemToast';
+import { useSelector } from 'react-redux';
+const API = import.meta.env.VITE_API_URL;
 
 const ManageTeam = () => {
     const { teamId } = useParams();
@@ -17,12 +18,13 @@ const ManageTeam = () => {
         projectIdea: '',
         needs: '',
     });
-    const user = JSON.parse(localStorage.getItem('user'));
+    const { user } = useSelector((state) => state.auth);
 
     const fetchTeam = async () => {
+        if(!user?.token) return;
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            const { data } = await axios.get(`http://localhost:5000/api/teams/${teamId}`, config);
+            const { data } = await axios.get(`${API}/api/teams/${teamId}`, config);
             setTeam(data);
             setFormData({
                 name: data.name,
@@ -38,7 +40,7 @@ const ManageTeam = () => {
 
     useEffect(() => {
         fetchTeam();
-    }, [teamId, user.token]);
+    }, [teamId, user?.token]);
 
     const handleUpdateTeam = async (e) => {
         e.preventDefault();
@@ -58,7 +60,7 @@ const ManageTeam = () => {
                 needs: needsArray
             };
 
-            const { data } = await axios.put(`http://localhost:5000/api/teams/${teamId}`, dataToSend, config);
+            const { data } = await axios.put(`${API}/api/teams/${teamId}`, dataToSend, config);
 
             setTeam(data);
             setIsEditing(false);
@@ -79,7 +81,7 @@ const ManageTeam = () => {
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
             const { data } = await axios.post(
-                `http://localhost:5000/api/teams/${teamId}/manage-request`,
+                `${API}/api/teams/${teamId}/manage-request`,
                 { userId: requestingUserId, action },
                 config
             );
@@ -107,7 +109,7 @@ const ManageTeam = () => {
             };
 
             await axios.delete(
-                `http://localhost:5000/api/teams/${teamId}/remove/${memberId}`,
+                `${API}/api/teams/${teamId}/remove/${memberId}`,
                 config
             );
 
@@ -139,7 +141,7 @@ const ManageTeam = () => {
                 }
             }
 
-            await axios.delete(`http://localhost:5000/api/teams/${teamId}`, config);
+            await axios.delete(`${API}/api/teams/${teamId}`, config);
 
             showToast({
                 message: 'Team deleted successfully.',

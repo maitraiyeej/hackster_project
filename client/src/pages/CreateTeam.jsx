@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import BrutalistCard from '@/components/ui/BrutalistCard';
 import { showToast } from '@/components/SystemToast';
+import { useSelector } from 'react-redux';
+const API = import.meta.env.VITE_API_URL;
 
 const CreateTeam = () => {
     const { id } = useParams();
@@ -17,14 +19,13 @@ const CreateTeam = () => {
         teamSize: 4
     });
 
-    const user = JSON.parse(localStorage.getItem('user'));
+    const { user } = useSelector((state) => state.auth);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
         try {
-            const user = JSON.parse(localStorage.getItem('user'));
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,7 +49,7 @@ const CreateTeam = () => {
                 projectIdea: formData.projectIdea
             };
 
-            await axios.post('http://localhost:5000/api/teams', payload, config);
+            await axios.post(`${API}/api/teams`, payload, config);
 
             showToast({
                 message: 'Team Created Successfully!',

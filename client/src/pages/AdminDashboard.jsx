@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+const API = import.meta.env.VITE_API_URL;
+
+
 
 const AdminDashboard = () => {
     const [formData, setFormData] = useState({
@@ -12,6 +16,7 @@ const AdminDashboard = () => {
         organization: '',
         techStack: '',
     });
+    const { user } = useSelector((state) => state.auth);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -28,11 +33,10 @@ const AdminDashboard = () => {
         setError('');
 
         try {
-            const userInfo = JSON.parse(localStorage.getItem('user'));
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${userInfo.token}`,
+                    Authorization: `Bearer ${user.token}`,
                 },
             };
 
@@ -41,7 +45,7 @@ const AdminDashboard = () => {
                 techStacks: formData.techStack.split(',').map(item => item.trim())
             };
 
-            await axios.post('http://localhost:5000/api/hackathons', finalData, config);
+            await axios.post(`${API}/api/hackathons`, finalData, config);
 
             setSuccess(true);
             setTimeout(() => navigate('/'), 2000);

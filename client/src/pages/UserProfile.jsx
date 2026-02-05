@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux';
 import LoadingScreen from './LoadingScreen';
 import BrutalistCard from '@/components/ui/BrutalistCard';
 import { showToast } from '@/components/SystemToast';
+const API = import.meta.env.VITE_API_URL;
+
 
 const UserProfile = () => {
     const { id } = useParams();
@@ -25,7 +27,7 @@ const UserProfile = () => {
             if(!loggedInUser || !loggedInUser.token) return;
             try {
                 const config = { headers: { Authorization: `Bearer ${loggedInUser.token}` } };
-                const { data } = await axios.get(`http://localhost:5000/api/users/${id}`, config);
+                const { data } = await axios.get(`${API}/api/users/${id}`, config);
                 setProfile(data);
                 setFormData({
                     bio: data.bio || '',
@@ -49,7 +51,7 @@ const UserProfile = () => {
                 ...formData,
                 skills: formData.skills.split(',').map(s => s.trim())
             };
-            await axios.put(`http://localhost:5000/api/users/profile`, updatedData, config);
+            await axios.put(`${API}/api/users/profile`, updatedData, config);
             setProfile({ ...profile, ...updatedData, skills: updatedData.skills });
             setIsEditing(false);
             showToast({
