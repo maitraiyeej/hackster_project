@@ -27,8 +27,12 @@ app.use('/api/messages', messageRoutes); // Use your message routes
 const server = http.createServer(app); // 4. Create HTTP server from express app
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173", // Allow your React frontend
-        methods: ["GET", "POST"]
+        origin: [
+            "http://localhost:5173", 
+            process.env.CLIENT_URL
+        ],
+        methods: ["GET", "POST"],
+        credentials:true
     }
 });
 
