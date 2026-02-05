@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import ExplorePage from "./pages/ExplorePage";
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/registerPage';
+import RegisterPage from './pages/RegisterPage';
 import AdminDashboard from "./pages/AdminDashboard";
 import MyEvents from "./pages/MyEvents";
 import HackathonDetails from "./pages/HackathonDetails";
