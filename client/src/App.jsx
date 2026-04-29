@@ -1,3 +1,4 @@
+import Leaderboard from "./pages/Leaderboard";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Navbar from "./components/Navbar";
@@ -31,6 +32,7 @@ function App() {
             <Route path="/" element={<HomePage user={user} />} />
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path='/register' element={<RegisterPage />} />
 
 

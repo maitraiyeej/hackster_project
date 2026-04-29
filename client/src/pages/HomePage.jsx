@@ -38,9 +38,35 @@ const HomePage = () => {
 
   if (isLoading) return <LoadingScreen message='LOADING_DATA...' />;
   if (error) return <div className="flex h-full items-center justify-center text-red-500">Error connecting to API.</div>;
+const handleAI = async () => {
+  const skill = prompt("Enter your skill (web / ai / ml)");
 
-  return (
+  if (!skill) return;
+
+  const res = await fetch("http://localhost:5001/ai", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ skill }),
+  });
+
+  const data = await res.json();
+
+  alert(data.reply);
+};
+ return (
+   
     <div className="min-h-full">
+   <button
+  onClick={handleAI}
+  className="bg-black text-white px-4 py-2 rounded-lg mt-4 ml-4"
+>
+  🤖 AI Team Matcher
+</button>
+<div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mt-4 ml-4 rounded">
+  🔔 You have 2 upcoming hackathons this week!
+</div>
       <div className=' top-0 w-full h-12 flex items-center justify-center px-10 z-50 bg-[#04040d] text-white text-[24px]'>
         <span className='uppercase font-bold italic'>Hack</span>
         <span className='uppercase font-bold  bg-white text-black px-1'>Ster</span>

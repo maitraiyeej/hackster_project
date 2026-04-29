@@ -10,6 +10,7 @@ import {
   IconUser,
   IconLogout,
   IconLogin,
+  IconTrophy,
   IconUserPlus
 } from "@tabler/icons-react";
 
@@ -37,6 +38,12 @@ const Navbar = () => {
       href: "/explore",
       color: "#62748e"
     },
+    {
+  title: "Leaderboard",
+  icon: <IconTrophy className="h-full w-full text-white" />,
+  href: "/leaderboard",
+  color: "#FFD700"
+},
     ...(isAdmin ? [{
       title: "Create Event",
       icon: <IconPlus className="h-full w-full text-black" />,

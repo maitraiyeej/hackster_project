@@ -1,6 +1,13 @@
-import dotenv from 'dotenv';
-dotenv.config();
-import express from 'express';
+import express from "express";
+
+import OpenAI from "openai";
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({
+  path: path.resolve("./.env"),
+});
+console.log("API KEY:", process.env.OPENAI_API_KEY);
 import mongoose from 'mongoose';
 import cors from 'cors';
 import http from 'http'; 
@@ -35,6 +42,27 @@ const io = new Server(server, {
         credentials:true
     }
 });
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+app.post("/ai", (req, res) => {
+  const { skill } = req.body;
+
+  const suggestions = {
+    ai: "🤖 Join AI hackathons like Smart India Hackathon, Devpost AI challenges, or build ML projects.",
+    web: "🌐 Try Hacktoberfest, frontend hackathons, or full-stack challenges.",
+    ml: "📊 Participate in Kaggle competitions or ML hackathons.",
+    app: "📱 Build mobile apps in Flutter or React Native hackathons."
+  };
+
+  const reply =
+    suggestions[skill?.toLowerCase()] ||
+    "🚀 Explore hackathons on Devpost, Unstop, or Smart India Hackathon.";
+
+  res.json({ reply });
+});
+   
+
 
 io.on('connection', (socket) => {
     console.log(`User Connected: ${socket.id}`);
@@ -71,12 +99,12 @@ io.on('connection', (socket) => {
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = 5001;
 const MONGO_URI = process.env.MONGO_URI;
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(MONGO_URI);
+        //await mongoose.connect(MONGO_URI);
         console.log('MongoDB connection successful!');
     } catch (error) {
         console.log("MongoDB connection failed!", error.message);
@@ -85,7 +113,7 @@ const connectDB = async () => {
 };
 
 const startServer = async () => {
-    await connectDB();
+    //await connectDB();
     server.listen(PORT, () => {
         console.log(`Server running on port ${PORT} (Socket.io Enabled)`);
     });
