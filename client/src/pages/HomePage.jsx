@@ -43,7 +43,7 @@ const handleAI = async () => {
 
   if (!skill) return;
 
-const res = await fetch("https://hackster-backend.onrender.com/ai", {    method: "POST",
+const res = await fetch("https://hackster-pro.onrender.com/ai", {    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
